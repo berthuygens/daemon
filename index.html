@@ -2413,10 +2413,12 @@
                 }));
 
                 if (ccbNewsItems.length > 0) {
+                    // Start with random item
+                    ccbCurrentIndex = Math.floor(Math.random() * ccbNewsItems.length);
                     showCCBNewsItem();
-                    // Rotate every 5 seconds
+                    // Rotate every 20 seconds
                     if (ccbTickerInterval) clearInterval(ccbTickerInterval);
-                    ccbTickerInterval = setInterval(rotateCCBNews, 5000);
+                    ccbTickerInterval = setInterval(rotateCCBNews, 20000);
                 } else {
                     ticker.textContent = 'no advisories';
                     ticker.href = 'https://ccb.belgium.be/advisories';
