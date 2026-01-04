@@ -151,19 +151,16 @@
         .ccb-news-ticker {
             color: var(--text-secondary);
             text-decoration: none;
-            max-width: 600px;
+            max-width: calc(100vw - 200px);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            transition: opacity 0.4s ease-in-out, color 0.2s;
+            transition: color 0.2s;
+            display: inline-block;
         }
 
         .ccb-news-ticker:hover {
             color: var(--accent-green);
-        }
-
-        .ccb-news-ticker.fade-out {
-            opacity: 0;
         }
 
         .cursor {
@@ -2387,6 +2384,7 @@
         let ccbNewsItems = [];
         let ccbCurrentIndex = 0;
         let ccbTickerInterval = null;
+        let ccbTypewriterTimeout = null;
 
         async function fetchCCBNews() {
             const ticker = document.getElementById('ccb-news-ticker');
@@ -2415,7 +2413,7 @@
                 if (ccbNewsItems.length > 0) {
                     // Start with random item
                     ccbCurrentIndex = Math.floor(Math.random() * ccbNewsItems.length);
-                    showCCBNewsItem();
+                    typewriteCCBNews();
                     // Rotate every 20 seconds
                     if (ccbTickerInterval) clearInterval(ccbTickerInterval);
                     ccbTickerInterval = setInterval(rotateCCBNews, 20000);
@@ -2430,29 +2428,37 @@
             }
         }
 
-        function showCCBNewsItem() {
+        function typewriteCCBNews() {
             const ticker = document.getElementById('ccb-news-ticker');
             if (ccbNewsItems.length === 0) return;
 
+            // Clear any pending typewriter
+            if (ccbTypewriterTimeout) {
+                clearTimeout(ccbTypewriterTimeout);
+            }
+
             const item = ccbNewsItems[ccbCurrentIndex];
-            ticker.textContent = item.title;
             ticker.href = item.link;
+            ticker.textContent = '';
+
+            const text = item.title;
+            let charIndex = 0;
+
+            function typeNextChar() {
+                if (charIndex < text.length) {
+                    ticker.textContent = text.substring(0, charIndex + 1);
+                    charIndex++;
+                    // ~30ms per character for telex effect
+                    ccbTypewriterTimeout = setTimeout(typeNextChar, 30);
+                }
+            }
+
+            typeNextChar();
         }
 
         function rotateCCBNews() {
-            const ticker = document.getElementById('ccb-news-ticker');
-
-            // Fade out
-            ticker.classList.add('fade-out');
-
-            setTimeout(() => {
-                // Move to next item
-                ccbCurrentIndex = (ccbCurrentIndex + 1) % ccbNewsItems.length;
-                showCCBNewsItem();
-
-                // Fade in
-                ticker.classList.remove('fade-out');
-            }, 400);
+            ccbCurrentIndex = (ccbCurrentIndex + 1) % ccbNewsItems.length;
+            typewriteCCBNews();
         }
 
         function init() {
