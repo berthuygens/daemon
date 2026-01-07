@@ -300,50 +300,10 @@
             color: var(--text-muted);
         }
 
-        .hero-ticker {
-            margin-top: var(--space-3);
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-2);
-            padding: var(--space-2) var(--space-4);
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-full);
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .hero-ticker-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: var(--radius-full);
-            animation: ticker-blink 2s infinite;
-        }
-
-        @keyframes ticker-blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        .hero-ticker a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color var(--duration-fast);
-            max-width: 400px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .hero-ticker a:hover {
-            color: var(--accent);
-        }
-
         /* ========== Search ========== */
         .search-section {
             max-width: 600px;
-            margin: 0 auto var(--space-8);
+            margin: 0 auto var(--space-4);
         }
 
         .search-wrapper {
@@ -646,27 +606,28 @@
         /* ========== Reddit Section with Image ========== */
         .fun-row {
             display: flex;
-            gap: var(--space-4);
-            margin-bottom: var(--space-6);
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .fun-widget {
             display: flex;
-            gap: var(--space-4);
-            padding: var(--space-4);
+            gap: var(--space-3);
+            padding: var(--space-3);
             background: var(--bg-surface);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
             flex: 1;
-            min-width: 320px;
-            max-width: 600px;
-            align-items: stretch;
+            min-width: 280px;
+            max-width: 480px;
+            align-items: center;
         }
 
         .fun-widget-image {
-            width: 120px;
-            height: 90px;
+            width: 80px;
+            height: 60px;
             border-radius: var(--radius-md);
             overflow: hidden;
             flex-shrink: 0;
@@ -674,6 +635,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            align-self: center;
         }
 
         .fun-widget-image img {
@@ -685,6 +647,31 @@
         .fun-widget-image .placeholder {
             color: var(--text-muted);
             font-size: 24px;
+        }
+
+        .fun-widget-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+            align-self: center;
+        }
+
+        .fun-widget-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .fun-widget-icon.ccb-icon {
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+        }
+
+        .ccb-widget {
+            min-width: 280px;
         }
 
         .fun-widget-body {
@@ -1055,16 +1042,13 @@
                 font-size: 16px;
             }
 
-            .hero-ticker {
-                max-width: 90%;
-            }
-
-            .hero-ticker a {
-                max-width: 200px;
-            }
-
             .fun-widget {
                 max-width: none;
+                min-width: 100%;
+            }
+
+            .ccb-widget {
+                min-width: 100%;
             }
 
             .status-bar {
@@ -1130,10 +1114,6 @@
                     <h1 class="hero-brand">B3.wtf</h1>
                     <div class="hero-time" id="hero-time">--:--</div>
                     <div class="hero-date" id="hero-date">Loading...</div>
-                    <div class="hero-ticker">
-                        <span class="hero-ticker-dot"></span>
-                        <a href="#" id="ccb-news-ticker">loading...</a>
-                    </div>
                 </div>
             </header>
 
@@ -1210,8 +1190,9 @@
                 </div>
             </section>
 
-            <!-- Fun Widget + Quick Links -->
+            <!-- Fun Widgets Row -->
             <section class="fun-row">
+                <!-- Reddit Widget -->
                 <div class="fun-widget">
                     <div class="fun-widget-image" id="fun-post-image">
                         <span class="placeholder">🎲</span>
@@ -1225,6 +1206,18 @@
                             <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8V3"></path>
                         </svg>
                     </button>
+                </div>
+                <!-- CCB Security Widget -->
+                <div class="fun-widget ccb-widget">
+                    <div class="fun-widget-icon ccb-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                        </svg>
+                    </div>
+                    <div class="fun-widget-body" id="ccb-widget-body">
+                        <div class="fun-widget-meta">CCB Security</div>
+                        <div class="fun-widget-title"><a href="#" id="ccb-news-ticker">loading...</a></div>
+                    </div>
                 </div>
             </section>
 
