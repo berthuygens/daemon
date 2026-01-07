@@ -463,12 +463,12 @@
 
         .card-body {
             padding: var(--space-2);
-            max-height: 340px;
+            height: 280px;
             overflow-y: auto;
         }
 
         .card-body::-webkit-scrollbar {
-            width: 4px;
+            width: 3px;
         }
 
         .card-body::-webkit-scrollbar-track {
@@ -476,8 +476,20 @@
         }
 
         .card-body::-webkit-scrollbar-thumb {
-            background: var(--border);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 2px;
+        }
+
+        .card-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        [data-theme="light"] .card-body::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="light"] .card-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.15);
         }
 
         /* ========== List Items (GitHub/Calendar) ========== */
