@@ -35,7 +35,15 @@
       "Bash(wrangler deploy:*)",
       "Bash(wrangler whoami:*)",
       "Bash(git remote set-url:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git stash:*)",
+      "Bash(dig:*)",
+      "Bash(host:*)",
+      "Bash(git pull:*)",
+      "Skill(frontend-design:frontend-design)",
+      "Bash(while IFS= read -r line)",
+      "Bash(do echo \"$#line | $line\")",
+      "Bash(done)"
     ]
   }
 }
