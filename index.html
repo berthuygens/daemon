@@ -232,20 +232,21 @@
             51%, 100% { opacity: 0; }
         }
 
-        /* Theme variables */
+        /* Light mode console theme */
         :root {
-            --console-bg: #0d1117;
-            --console-titlebar: #161b22;
-            --console-border: #30363d;
-            --console-text: #e6edf3;
-            --console-muted: #6e7681;
-            --console-dim: #8b949e;
-            --console-accent: #7ee787;
-            --console-blue: #58a6ff;
-            --console-glow: rgba(126, 231, 135, 0.2);
-            --console-output-bg: rgba(0, 0, 0, 0.2);
+            --console-bg: #f6f8fa;
+            --console-titlebar: #ffffff;
+            --console-border: #d0d7de;
+            --console-text: #1f2328;
+            --console-muted: #656d76;
+            --console-dim: #656d76;
+            --console-accent: #1a7f37;
+            --console-blue: #0969da;
+            --console-glow: rgba(26, 127, 55, 0.1);
+            --console-output-bg: rgba(0, 0, 0, 0.03);
         }
 
+        /* Dark mode console theme */
         [data-theme="dark"] {
             --console-bg: #0d1117;
             --console-titlebar: #161b22;
@@ -1262,13 +1263,12 @@
                 <span class="console-datetime" id="console-datetime">--:-- · ---</span>
             </div>
             <div class="console-body">
-                <pre class="ascii-art">
-   ██████╗ ██████╗       ██╗    ██╗████████╗███████╗
-   ██╔══██╗╚════██╗      ██║    ██║╚══██╔══╝██╔════╝
-   ██████╔╝ █████╔╝      ██║ █╗ ██║   ██║   █████╗
-   ██╔══██╗ ╚═══██╗ ░▓▒  ██║███╗██║   ██║   ██╔══╝
-   ██████╔╝██████╔╝ ░▓▒  ╚███╔███╔╝   ██║   ██║
-   ╚═════╝ ╚═════╝        ╚══╝╚══╝    ╚═╝   ╚═╝     </pre>
+                <pre class="ascii-art">██████╗ ██████╗   ██╗    ██╗████████╗███████╗
+██╔══██╗╚════██╗  ██║    ██║╚══██╔══╝██╔════╝
+██████╔╝ █████╔╝  ██║ █╗ ██║   ██║   █████╗
+██╔══██╗ ╚═══██╗  ██║███╗██║   ██║   ██╔══╝
+██████╔╝██████╔╝  ╚███╔███╔╝   ██║   ██║
+╚═════╝ ╚═════╝   ╚══╝╚══╝    ╚═╝   ╚═╝</pre>
             </div>
             <div class="console-output">
                 <span class="console-prompt">❯</span>
