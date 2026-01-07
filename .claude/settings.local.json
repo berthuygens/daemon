@@ -1,39 +1,4 @@
 {
-  "hooks": {
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "afplay /Users/sysopbeta/audio/task_complete.mp3"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "matcher": "idle_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "afplay /Users/sysopbeta/audio/task_complete.mp3"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "afplay /Users/sysopbeta/audio/task_complete.mp3"
-          }
-        ]
-      }
-    ]
-  },
   "permissions": {
     "allow": [
       "Skill(frontend-design)",
@@ -77,7 +42,43 @@
       "Bash(git pull)",
       "Skill(design-principles)",
       "Skill(git)",
-      "WebFetch(domain:ready.so)"
+      "WebFetch(domain:ready.so)",
+      "Bash(rsvg-convert:*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /Users/sysopbeta/audio/task_complete.mp3"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /Users/sysopbeta/audio/task_complete.mp3"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /Users/sysopbeta/audio/task_complete.mp3"
+          }
+        ]
+      }
     ]
   }
 }
