@@ -47,7 +47,12 @@
       "Bash(gh pr view:*)",
       "Bash(git push:*)",
       "Bash(ln:*)",
-      "Bash(git -C /Users/sysopbeta/code/work/daemon log --oneline -20)"
+      "Bash(git -C /Users/sysopbeta/code/work/daemon log --oneline -20)",
+      "Bash(~/.zshrc)",
+      "Bash(source ~/.zshrc)",
+      "Bash(git -C /Users/sysopbeta/code/work/daemon status)",
+      "Bash(git -C /Users/sysopbeta/code/work/daemon add:*)",
+      "Bash(git -C /Users/sysopbeta/code/work/daemon diff --cached)"
     ]
   }
 }
