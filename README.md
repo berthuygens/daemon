@@ -5,7 +5,7 @@ A personal developer dashboard with GitHub integration and Google Calendar suppo
 ## Features
 
 - **GitHub Integration**: View your assigned issues and pull requests
-- **Google Calendar**: See your next 3 upcoming meetings with **automatic token refresh** (never manually reconnect!)
+- **Google Calendar**: See your next 4 upcoming meetings with **automatic token refresh** (never manually reconnect!)
 - **Quick Links**: Fast access to frequently used services (GitHub, Calendar, Gmail, De Morgen, Reddit, AWS, ISMS, Gemini, Chess)
 - **Drag & Drop Links**: Reorder quick links by dragging - order is saved locally
 - **Random Fun Posts**: Live Reddit posts from SFW subreddits (r/ProgrammerHumor, r/aww, r/wholesomememes, etc.)
