@@ -403,9 +403,10 @@ async function handleOTRSTickets(env, corsHeader) {
     }
 
     // Step 3: Get details for each ticket sequentially to avoid rate limits
+    // Include AllArticles=1 to fetch ticket body content
     const allTickets = [];
     for (const ticketId of allTicketIds) {
-      const ticketResponse = await fetch(`${OTOBO_BASE_URL}/Get/${ticketId}?SessionID=${sessionId}`);
+      const ticketResponse = await fetch(`${OTOBO_BASE_URL}/Get/${ticketId}?SessionID=${sessionId}&AllArticles=1`);
       const ticketData = await ticketResponse.json();
       if (ticketData.Ticket?.[0]) {
         allTickets.push(ticketData.Ticket[0]);
