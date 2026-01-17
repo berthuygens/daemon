@@ -611,6 +611,23 @@
             min-width: 0;
         }
 
+        /* Terminal SVG Section */
+        .terminal-section {
+            margin-top: var(--space-6);
+        }
+
+        .terminal-svg-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .terminal-svg-container svg {
+            width: 100%;
+            height: auto;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+        }
+
         .fun-widget-body {
             flex: 1;
             min-width: 0;
@@ -1168,6 +1185,194 @@
                         <div class="fun-widget-meta">CCB Security</div>
                         <div class="fun-widget-title"><a href="#" id="ccb-news-ticker">loading...</a></div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Terminal SVG Section -->
+            <section class="terminal-section">
+                <div class="terminal-svg-container">
+                    <svg fill="none" viewBox="0 0 800 240" width="800" height="240" xmlns="http://www.w3.org/2000/svg">
+                        <foreignObject width="100%" height="100%">
+                            <div xmlns="http://www.w3.org/1999/xhtml">
+                                <style>
+                                    .terminal-container * { margin: 0; padding: 0; box-sizing: border-box; }
+                                    .terminal-container {
+                                        width: 100%;
+                                        height: 240px;
+                                        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+                                        border-radius: 10px;
+                                        padding: 20px 30px;
+                                        font-family: ui-monospace, 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+                                    }
+                                    .terminal-container .terminal-header {
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 6px;
+                                        padding: 8px;
+                                        background-color: rgba(0, 0, 0, 0.3);
+                                        border-radius: 8px;
+                                        margin-bottom: 20px;
+                                    }
+                                    .terminal-container .circle {
+                                        width: 12px;
+                                        height: 12px;
+                                        border-radius: 50%;
+                                    }
+                                    .terminal-container .red { background: #FF5F56; }
+                                    .terminal-container .yellow { background: #FFBD2E; }
+                                    .terminal-container .green { background: #27C93F; }
+                                    .terminal-container .command-line {
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 12px;
+                                        margin-bottom: 16px;
+                                        font-size: 20px;
+                                        opacity: 0;
+                                        animation: termFadeIn 0.3s ease-out forwards;
+                                    }
+                                    .terminal-container .arrow {
+                                        color: #FF6B35;
+                                        font-weight: bold;
+                                    }
+                                    .terminal-container .spinner {
+                                        color: #FF6B35;
+                                        font-size: 18px;
+                                    }
+                                    .terminal-container .spinner::before {
+                                        content: '⣾';
+                                        animation: termRotate 1.2s linear infinite, termComplete 0s 5.0s forwards;
+                                    }
+                                    @keyframes termRotate {
+                                        0% { content: '⣾'; }
+                                        12.5% { content: '⣽'; }
+                                        25% { content: '⣻'; }
+                                        37.5% { content: '⢿'; }
+                                        50% { content: '⡿'; }
+                                        62.5% { content: '⣟'; }
+                                        75% { content: '⣯'; }
+                                        87.5% { content: '⣷'; }
+                                        100% { content: '⣷'; }
+                                    }
+                                    @keyframes termComplete {
+                                        to { content: '✓'; color: #27C93F; }
+                                    }
+                                    .terminal-container .command {
+                                        color: #FFD9CC;
+                                        overflow: hidden;
+                                        border-right: 2px solid #FFD9CC;
+                                        white-space: nowrap;
+                                        width: 0;
+                                        animation:
+                                            termTyping 1s steps(6) 0.3s forwards,
+                                            termBlink 0.75s step-end 0s 2,
+                                            termHideCursor 0s 1.5s forwards;
+                                    }
+                                    @keyframes termTyping {
+                                        from { width: 0; }
+                                        to { width: 5.5em; }
+                                    }
+                                    @keyframes termBlink {
+                                        50% { border-color: transparent; }
+                                    }
+                                    @keyframes termHideCursor {
+                                        to { border-color: transparent; }
+                                    }
+                                    .terminal-container .output {
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: 8px;
+                                        font-size: 16px;
+                                    }
+                                    .terminal-container .line {
+                                        display: flex;
+                                        gap: 10px;
+                                        align-items: flex-start;
+                                        opacity: 0;
+                                    }
+                                    .terminal-container .line:nth-child(1) {
+                                        animation: termFadeInUp 0.5s ease-out 1.3s forwards;
+                                    }
+                                    .terminal-container .line:nth-child(2) {
+                                        animation: termFadeInUp 0.5s ease-out 1.8s forwards;
+                                    }
+                                    .terminal-container .line:nth-child(3) {
+                                        animation: termFadeInUp 0.5s ease-out 4.5s forwards;
+                                    }
+                                    .terminal-container .bullet {
+                                        color: #FF6B35;
+                                        flex-shrink: 0;
+                                    }
+                                    .terminal-container .text {
+                                        color: #B8B8B8;
+                                        line-height: 1.6;
+                                    }
+                                    .terminal-container .highlight {
+                                        color: #FFD9CC;
+                                        font-weight: 500;
+                                    }
+                                    .terminal-container .typing-line {
+                                        overflow: hidden;
+                                        white-space: nowrap;
+                                        width: 0;
+                                        animation: termTypeLine 2.5s steps(50) 2.0s forwards;
+                                    }
+                                    @keyframes termTypeLine {
+                                        to { width: 100%; }
+                                    }
+                                    .terminal-container a {
+                                        color: #FFD9CC;
+                                        text-decoration: none;
+                                    }
+                                    .terminal-container a:hover {
+                                        text-decoration: underline;
+                                    }
+                                    @keyframes termFadeIn {
+                                        to { opacity: 1; }
+                                    }
+                                    @keyframes termFadeInUp {
+                                        from {
+                                            opacity: 0;
+                                            transform: translateY(10px);
+                                        }
+                                        to {
+                                            opacity: 1;
+                                            transform: translateY(0);
+                                        }
+                                    }
+                                </style>
+                                <div class="terminal-container">
+                                    <div class="terminal-header">
+                                        <div class="circle red"></div>
+                                        <div class="circle yellow"></div>
+                                        <div class="circle green"></div>
+                                    </div>
+                                    <div class="command-line">
+                                        <span class="arrow">&#62;</span>
+                                        <span class="spinner"></span>
+                                        <span class="command">whoami</span>
+                                    </div>
+                                    <div class="output">
+                                        <div class="line">
+                                            <span class="bullet">⏺</span>
+                                            <span class="text">
+                                                <span class="highlight">Bert Huygens</span> • ICT Devops Manager • CISO
+                                            </span>
+                                        </div>
+                                        <div class="line">
+                                            <span class="bullet">⏺</span>
+                                            <span class="text typing-line">automate.terminals(); • Claude Code</span>
+                                        </div>
+                                        <div class="line">
+                                            <span class="bullet">⏺</span>
+                                            <span class="text">
+                                                Site: <a href="https://b3.wtf/" target="_blank" class="highlight">b3.wtf</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </foreignObject>
+                    </svg>
                 </div>
             </section>
 
