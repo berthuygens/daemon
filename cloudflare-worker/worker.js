@@ -10,6 +10,7 @@
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
+  'https://sysopbeta.be',
   'https://b3.wtf',
   'https://berthuygens.github.io',
   'http://localhost:8080',
