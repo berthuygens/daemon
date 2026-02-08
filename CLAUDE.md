@@ -22,6 +22,7 @@ wrangler secret put GOOGLE_CLIENT_ID
 wrangler secret put GOOGLE_CLIENT_SECRET
 wrangler secret put OTRS_USERNAME    # OTOBO API user
 wrangler secret put OTRS_PASSWORD    # OTOBO API password
+wrangler secret put API_KEY          # Bearer token for frontend → worker auth
 
 # Create KV namespace (if needed)
 wrangler kv:namespace create "OAUTH_TOKENS"
@@ -45,10 +46,21 @@ Frontend (Static)                    Backend (Cloudflare Worker)
 
 **Key architectural decisions:**
 - Single HTML file contains all CSS, HTML, and JavaScript (no build system)
-- GitHub token stored in browser localStorage
+- GitHub token and Worker API key stored in browser localStorage
+- Google access token stored in-memory only (never persisted to localStorage)
 - Google refresh token stored in Cloudflare KV (server-side)
 - Worker handles OAuth token refresh automatically - users authenticate once
 - OAuth flow includes CSRF protection via state parameter validation
+
+## Security
+
+- **Content Security Policy**: Restrictive CSP meta tag with `default-src 'none'`, whitelisted connect-src for APIs, `frame-ancestors 'none'` (clickjacking prevention)
+- **XSS prevention**: `escapeHtml()` used for all user-controlled and API-sourced values rendered via innerHTML; URL protocol validation on quick links
+- **Token storage**: Google access tokens kept in-memory only (`_googleToken` variable) to limit exposure from XSS; refresh tokens stay server-side in KV
+- **CSRF protection**: OAuth state parameter with `crypto.randomUUID()`, stored in KV with 5-minute TTL, validated and deleted on callback
+- **postMessage validation**: OAuth callback messages validated against hardcoded `TRUSTED_WORKER_ORIGINS`
+- **CORS**: Worker validates `Origin` header against `ALLOWED_ORIGINS` whitelist
+- **API key auth**: All non-OAuth worker endpoints require `Authorization: Bearer <API_KEY>` header
 
 ## External APIs
 
@@ -77,8 +89,9 @@ Events with these titles are automatically filtered (work locations):
 
 ## Live URLs
 
-- https://b3.wtf (custom domain)
+- https://sysopbeta.be (custom domain via CNAME)
 - https://berthuygens.github.io/daemon/
+- Worker: https://sysopbeta-oauth.huygens-bert.workers.dev
 
 ## OTOBO Integration
 
