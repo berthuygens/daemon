@@ -1347,10 +1347,9 @@
                         <input type="text" class="form-input" id="profile-link-url" placeholder="https://github.com/username">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Custom Quick Link</label>
-                        <input type="text" class="form-input" id="custom-link-name" placeholder="Link name" style="margin-bottom: 8px;">
-                        <input type="text" class="form-input" id="custom-link-url" placeholder="https://example.com">
-                        <p class="form-hint">Add a custom link to Quick Links (leave empty to hide)</p>
+                        <label class="form-label">Quick Links <span style="color: var(--text-muted); font-weight: 400">(max 5)</span></label>
+                        <div id="quick-links-settings" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                        <p class="form-hint">Name + URL per link. Leave empty to hide. Drag to reorder in the nav bar.</p>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Save & Reload</button>
                 </form>
@@ -1572,66 +1571,33 @@
         });
 
         // ========== Quick Links ==========
-        const DEFAULT_LINKS = [
-            { id: 'aws', name: 'AWS', url: 'https://eu-west-1.console.aws.amazon.com/ec2/home?region=eu-west-1#Home', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.4c5.302 0 9.6 4.298 9.6 9.6s-4.298 9.6-9.6 9.6S2.4 17.302 2.4 12 6.698 2.4 12 2.4zm-1.2 4.8v9.6l7.2-4.8-7.2-4.8z"/></svg>' },
-            { id: 'reddit', name: 'Reddit', url: 'https://reddit.com', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701z"/></svg>' },
-            { id: 'github', name: 'IT Ops', url: 'https://github.com/orgs/inbo/projects/23', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>' },
-            { id: 'devops', name: 'DevOps', url: 'https://github.com/orgs/inbo/projects/18', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>' },
-            { id: 'ticketing', name: 'Ticketing', url: 'https://ticketing.inbo.be/', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>' }
-        ];
+        const QUICK_LINKS_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+        const MAX_QUICK_LINKS = 5;
 
-        const LINKS_ORDER_KEY = 'quick-links-order';
-
-        function getLinksOrder() {
-            try {
-                const order = JSON.parse(localStorage.getItem(LINKS_ORDER_KEY));
-                if (order && Array.isArray(order)) return order;
-            } catch {}
-            return DEFAULT_LINKS.map(l => l.id);
-        }
-
-        function saveLinksOrder(order) {
-            localStorage.setItem(LINKS_ORDER_KEY, JSON.stringify(order));
-        }
-
-        function getAllLinks() {
+        function getQuickLinks() {
             const config = getConfig();
-            const links = [...DEFAULT_LINKS];
-
-            // Add custom link if configured
-            if (config.customLinkName && config.customLinkUrl) {
-                links.push({
-                    id: 'custom',
-                    name: config.customLinkName,
-                    url: config.customLinkUrl,
-                    icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
-                });
+            if (Array.isArray(config.quickLinks)) {
+                return config.quickLinks.filter(l => l.name && l.url).slice(0, MAX_QUICK_LINKS);
             }
-
-            return links;
+            return [];
         }
 
         function renderQuickLinks() {
             const container = document.getElementById('quick-links');
-            const order = getLinksOrder();
-            const allLinks = getAllLinks();
+            const links = getQuickLinks();
 
-            const sortedLinks = order
-                .map(id => allLinks.find(l => l.id === id))
-                .filter(Boolean);
+            if (links.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
 
-            allLinks.forEach(link => {
-                if (!order.includes(link.id)) sortedLinks.push(link);
-            });
-
-            container.innerHTML = sortedLinks.map(link => {
+            container.innerHTML = links.map((link, i) => {
                 // SECURITY: Escape user-controlled values, validate URL protocol
                 const safeUrl = /^https?:\/\//i.test(link.url) ? escapeHtml(link.url) : '#';
                 const safeName = escapeHtml(link.name);
-                const safeId = escapeHtml(link.id);
                 return `
-                <a href="${safeUrl}" class="quick-link" draggable="true" data-id="${safeId}" target="_blank" rel="noopener">
-                    ${link.icon}
+                <a href="${safeUrl}" class="quick-link" draggable="true" data-idx="${i}" target="_blank" rel="noopener">
+                    ${QUICK_LINKS_ICON}
                     <span>${safeName}</span>
                 </a>
             `}).join('');
@@ -1659,7 +1625,7 @@
             draggedElement = this;
             this.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', this.dataset.id);
+            e.dataTransfer.setData('text/plain', this.dataset.idx);
         }
 
         function handleDragEnd() {
@@ -1690,19 +1656,57 @@
 
             if (draggedElement && this !== draggedElement) {
                 const container = document.getElementById('quick-links');
-                const allLinks = [...container.querySelectorAll('.quick-link')];
-                const draggedIdx = allLinks.indexOf(draggedElement);
-                const targetIdx = allLinks.indexOf(this);
+                const allEls = [...container.querySelectorAll('.quick-link')];
+                const fromIdx = allEls.indexOf(draggedElement);
+                const toIdx = allEls.indexOf(this);
 
-                if (draggedIdx < targetIdx) {
+                if (fromIdx < toIdx) {
                     this.parentNode.insertBefore(draggedElement, this.nextSibling);
                 } else {
                     this.parentNode.insertBefore(draggedElement, this);
                 }
 
-                const newOrder = [...container.querySelectorAll('.quick-link')].map(el => el.dataset.id);
-                saveLinksOrder(newOrder);
+                // Persist new order to config
+                const config = getConfig();
+                const links = getQuickLinks();
+                const reordered = [...container.querySelectorAll('.quick-link')].map(el => links[parseInt(el.dataset.idx)]);
+                config.quickLinks = reordered;
+                saveConfig(config);
+                // Re-render so data-idx attributes match new order
+                renderQuickLinks();
             }
+        }
+
+        function renderQuickLinksSettings() {
+            const container = document.getElementById('quick-links-settings');
+            const config = getConfig();
+            const links = Array.isArray(config.quickLinks) ? config.quickLinks : [];
+
+            container.innerHTML = '';
+            for (let i = 0; i < MAX_QUICK_LINKS; i++) {
+                const link = links[i] || { name: '', url: '' };
+                const row = document.createElement('div');
+                row.style.cssText = 'display: flex; gap: 8px;';
+                row.innerHTML = `
+                    <input type="text" class="form-input ql-name" data-idx="${i}" placeholder="Name" value="${escapeHtml(link.name || '')}" style="flex: 0 0 100px;">
+                    <input type="text" class="form-input ql-url" data-idx="${i}" placeholder="https://..." value="${escapeHtml(link.url || '')}" style="flex: 1;">
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        function collectQuickLinksFromSettings() {
+            const names = document.querySelectorAll('.ql-name');
+            const urls = document.querySelectorAll('.ql-url');
+            const links = [];
+            for (let i = 0; i < MAX_QUICK_LINKS; i++) {
+                const name = names[i]?.value?.trim();
+                const url = urls[i]?.value?.trim();
+                if (name && url) {
+                    links.push({ name, url });
+                }
+            }
+            return links;
         }
 
         renderQuickLinks();
@@ -2439,8 +2443,7 @@
             document.getElementById('worker-api-key').value = config.workerApiKey || '';
             document.getElementById('profile-image-url').value = config.profileImageUrl || '';
             document.getElementById('profile-link-url').value = config.profileLinkUrl || 'https://github.com/berthuygens?tab=repositories';
-            document.getElementById('custom-link-name').value = config.customLinkName || '';
-            document.getElementById('custom-link-url').value = config.customLinkUrl || '';
+            renderQuickLinksSettings();
             updateGoogleAuthStatus();
             modal.classList.add('active');
         });
@@ -2475,8 +2478,10 @@
             config.workerApiKey = document.getElementById('worker-api-key').value;
             config.profileImageUrl = document.getElementById('profile-image-url').value;
             config.profileLinkUrl = document.getElementById('profile-link-url').value || 'https://github.com/berthuygens?tab=repositories';
-            config.customLinkName = document.getElementById('custom-link-name').value;
-            config.customLinkUrl = document.getElementById('custom-link-url').value;
+            config.quickLinks = collectQuickLinksFromSettings();
+            // Clean up legacy custom link fields
+            delete config.customLinkName;
+            delete config.customLinkUrl;
             saveConfig(config);
             modal.classList.remove('active');
             updateRepoSearchPlaceholder();
