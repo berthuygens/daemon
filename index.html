@@ -1022,31 +1022,38 @@
         }
 
         .ticket-article {
-            margin-bottom: 20px;
-            padding: 14px 16px;
-            background: var(--bg-tertiary);
+            margin-bottom: 8px;
             border-radius: 8px;
             border-left: 3px solid var(--accent-blue);
-            border-bottom: 1px solid var(--border-default);
+            background: var(--bg-tertiary);
         }
 
-        .ticket-article:first-child {
-            border-left-color: var(--accent-green, #3fb950);
-        }
-
-        .ticket-article:last-child {
-            margin-bottom: 0;
-            border-bottom: none;
-        }
-
-        .ticket-article-header {
+        .ticket-article summary {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-default);
+            padding: 10px 14px;
             font-size: 12px;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }
+
+        .ticket-article summary::-webkit-details-marker { display: none; }
+
+        .ticket-article summary::before {
+            content: '▸';
+            margin-right: 8px;
+            color: var(--text-muted);
+            transition: transform 0.15s;
+        }
+
+        .ticket-article[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        .ticket-article[open] {
+            border-left-color: var(--accent-green, #3fb950);
         }
 
         .ticket-article-from {
@@ -1056,9 +1063,12 @@
 
         .ticket-article-date {
             color: var(--text-muted);
+            margin-left: auto;
+            padding-left: 12px;
         }
 
         .ticket-article-body {
+            padding: 0 14px 14px;
             font-size: 13px;
             line-height: 1.6;
             color: var(--text-secondary);
@@ -2074,19 +2084,19 @@
             let bodyHtml = `<div class="ticket-title">${escapeHtml(ticket.Title)}</div>`;
 
             if (ticket.Article && ticket.Article.length > 0) {
-                bodyHtml += [...ticket.Article].reverse().map(article => {
+                bodyHtml += [...ticket.Article].reverse().map((article, index) => {
                     const from = article.From || article.SenderType || 'Unknown';
                     const created = article.Created ? timeAgo(article.Created) : '';
                     const body = article.Body || '';
 
                     return `
-                        <div class="ticket-article">
-                            <div class="ticket-article-header">
+                        <details class="ticket-article"${index === 0 ? ' open' : ''}>
+                            <summary>
                                 <span class="ticket-article-from">${escapeHtml(from)}</span>
                                 <span class="ticket-article-date">${created}</span>
-                            </div>
+                            </summary>
                             <div class="ticket-article-body">${escapeHtml(body)}</div>
-                        </div>
+                        </details>
                     `;
                 }).join('');
             } else {
