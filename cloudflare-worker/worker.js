@@ -394,26 +394,22 @@ async function handleOTRSTickets(env, corsHeader) {
 
     const sessionId = loginData.SessionID;
 
-    // Small delay after login for session to be ready
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    // Step 2: Search for new and open tickets
+    // Step 2: Search for new and open tickets in parallel
     const searchBody = { SessionID: sessionId, Limit: 50 };
     if (ownerId) searchBody.OwnerIDs = [ownerId];
 
-    const searchNew = await fetch(`${otoboBaseUrl}/Search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...searchBody, StateType: 'new' }),
-    });
-    const searchOpen = await fetch(`${otoboBaseUrl}/Search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...searchBody, StateType: 'open' }),
-    });
-
-    const newData = await searchNew.json();
-    const openData = await searchOpen.json();
+    const [newData, openData] = await Promise.all([
+      fetch(`${otoboBaseUrl}/Search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...searchBody, StateType: 'new' }),
+      }).then(r => r.json()),
+      fetch(`${otoboBaseUrl}/Search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...searchBody, StateType: 'open' }),
+      }).then(r => r.json()),
+    ]);
 
     // Check for errors in search responses
     if (newData.Error || openData.Error) {
@@ -430,16 +426,16 @@ async function handleOTRSTickets(env, corsHeader) {
       return jsonResponse({ tickets: [], ticketBaseUrl: deriveTicketBaseUrl(otoboBaseUrl) }, 200, corsHeader);
     }
 
-    // Step 3: Get details for each ticket sequentially to avoid rate limits
-    // Include AllArticles=1 to fetch ticket body content
-    const allTickets = [];
-    for (const ticketId of allTicketIds) {
-      const ticketResponse = await fetch(`${otoboBaseUrl}/Get/${ticketId}?SessionID=${sessionId}&AllArticles=1`);
-      const ticketData = await ticketResponse.json();
-      if (ticketData.Ticket?.[0]) {
-        allTickets.push(ticketData.Ticket[0]);
-      }
-    }
+    // Step 3: Get details for all tickets in parallel
+    const ticketResults = await Promise.all(
+      allTicketIds.map(ticketId =>
+        fetch(`${otoboBaseUrl}/Get/${ticketId}?SessionID=${sessionId}&AllArticles=1`)
+          .then(r => r.json())
+      )
+    );
+    const allTickets = ticketResults
+      .filter(d => d.Ticket?.[0])
+      .map(d => d.Ticket[0]);
 
     // Filter by OwnerID if configured
     // Use loose equality (==) because OTOBO API may return OwnerID as string or number
