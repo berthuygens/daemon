@@ -5,7 +5,7 @@ compatibility_date = "2024-01-01"
 # KV Namespace for storing tokens
 [[kv_namespaces]]
 binding = "OAUTH_TOKENS"
-id = "414bf6e638644188b308eada7de62a67"
+id = "8b91d349c59944b3833def5c3455a8eb"
 
 # Environment variables (secrets - set via wrangler secret put)
 # GOOGLE_CLIENT_ID - set via: wrangler secret put GOOGLE_CLIENT_ID
