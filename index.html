@@ -2386,8 +2386,24 @@
             const config = getConfig();
             const statusEl = document.getElementById('calendar-status');
 
-            // SECURITY: Check in-memory token or persistent connected flag, not stored token
-            if (!_googleToken && !config.googleConnected) {
+            // Worker URL configured = auto-refresh available, show status accordingly
+            if (config.workerUrl) {
+                if (_googleToken || config.googleConnected) {
+                    statusEl.innerHTML = `<span style="font-size: 12px; color: var(--success); font-weight: 500;">✓ Auto</span>`;
+                } else {
+                    statusEl.innerHTML = `
+                        <button class="calendar-reconnect" onclick="triggerGoogleReconnect()">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8V3"></path>
+                            </svg>
+                            Connect
+                        </button>
+                    `;
+                }
+                return;
+            }
+
+            if (!_googleToken) {
                 statusEl.innerHTML = `
                     <button class="calendar-reconnect" onclick="triggerGoogleReconnect()">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2396,11 +2412,6 @@
                         Connect
                     </button>
                 `;
-                return;
-            }
-
-            if (config.workerUrl) {
-                statusEl.innerHTML = `<span style="font-size: 12px; color: var(--success); font-weight: 500;">✓ Auto</span>`;
                 return;
             }
 
