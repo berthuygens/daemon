@@ -1,0 +1,21 @@
+# Claude Code local settings
+.claude/
+CLAUDE.md
+
+# macOS
+.DS_Store
+
+# Editor swap files
+*.swp
+*.swo
+
+# Environment files (secrets)
+.env
+.env.*
+.dev.vars
+
+# Wrangler
+.wrangler/
+
+# Node
+node_modules/

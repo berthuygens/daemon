@@ -1,0 +1,2861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://api.github.com https://www.googleapis.com https://www.reddit.com https://sysopbeta-oauth.sysopbeta.workers.dev; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+    <title>terminals.work</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dark Mode - Warm, soft palette inspired by defer.to */
+            --bg-base: #0c0c0c;
+            --bg-surface: #161616;
+            --bg-elevated: #1e1e1e;
+            --bg-hover: #262626;
+
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+
+            --text-primary: #f5f5f5;
+            --text-secondary: #a3a3a3;
+            --text-muted: #737373;
+
+            /* Accent - Soft blue */
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --accent-muted: rgba(99, 102, 241, 0.15);
+
+            /* Semantic */
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+
+            /* Shadows - Soft, diffused */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.3);
+
+            /* Radius - Soft, rounded */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+
+            /* Spacing - Generous */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+            --space-16: 64px;
+
+            /* Typography */
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+            /* Animation */
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+        }
+
+        /* Light Mode - Clean, bright */
+        [data-theme="light"] {
+            --bg-base: #fafafa;
+            --bg-surface: #ffffff;
+            --bg-elevated: #f5f5f5;
+            --bg-hover: #ebebeb;
+
+            --border: rgba(0, 0, 0, 0.06);
+            --border-hover: rgba(0, 0, 0, 0.12);
+
+            --text-primary: #171717;
+            --text-secondary: #525252;
+            --text-muted: #a3a3a3;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ========== Navigation Bar ========== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-base);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+            padding: var(--space-4) var(--space-8);
+            z-index: 100;
+        }
+
+        .nav .quick-links {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: nowrap;
+            margin: 0;
+        }
+
+        .nav-search {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .nav-search .search-wrapper {
+            position: relative;
+        }
+
+        .nav-search .search-input {
+            width: 100%;
+            padding: var(--space-3) var(--space-4);
+            padding-left: 40px;
+            font-family: var(--font-sans);
+            font-size: 14px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .nav-search .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-muted);
+        }
+
+        .nav-search .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .nav-search .search-results {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            display: none;
+            z-index: 50;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-search .search-results::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-search .search-results.has-results {
+            display: block;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin-left: auto;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .nav-btn:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        .nav-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .profile-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            border: 2px solid var(--border);
+            background: var(--bg-elevated);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .profile-btn:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .profile-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-btn .placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-elevated);
+            color: var(--text-muted);
+        }
+
+        .theme-btn .sun-icon { display: block; }
+        .theme-btn .moon-icon { display: none; }
+        [data-theme="light"] .theme-btn .sun-icon { display: none; }
+        [data-theme="light"] .theme-btn .moon-icon { display: block; }
+
+        /* ========== Main Container ========== */
+        .main {
+            padding-top: 88px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--space-10) var(--space-8);
+        }
+
+        /* ========== Search Prefix ========== */
+        .search-prefix {
+            position: absolute;
+            left: var(--space-4);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+            font-size: 14px;
+            font-family: var(--font-mono);
+        }
+
+        /* ========== Dashboard Grid ========== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-6);
+            margin-bottom: var(--space-10);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========== Cards ========== */
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--border-hover);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-5) var(--space-5) var(--space-4);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .card-title::before {
+            display: none;
+        }
+
+        .card-title svg {
+            display: block;
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+        }
+
+        .card-badge {
+            font-size: 13px;
+            font-weight: 500;
+            padding: var(--space-1) var(--space-3);
+            background: var(--bg-elevated);
+            border: none;
+            border-radius: var(--radius-full);
+            color: var(--text-secondary);
+        }
+
+        .card-toggle {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .card-toggle-btn {
+            font-size: 13px;
+            font-weight: 500;
+            padding: var(--space-2) var(--space-3);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-out);
+            white-space: nowrap;
+            font-family: var(--font-sans);
+        }
+
+        .card-toggle-btn:hover {
+            color: var(--text-secondary);
+            background: var(--bg-elevated);
+        }
+
+        .card-toggle-btn.active {
+            background: var(--accent-muted);
+            color: var(--accent);
+        }
+
+        .card-toggle-btn span.has-items {
+            color: var(--accent);
+        }
+
+        .card-body {
+            padding: var(--space-3);
+            height: 320px;
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+
+        .card-body::-webkit-scrollbar {
+            display: none; /* Chrome/Safari/Opera */
+        }
+
+        /* ========== List Items (GitHub/Calendar) ========== */
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            text-decoration: none;
+            color: inherit;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .list-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .list-item:hover,
+        .list-item.selected {
+            background: var(--bg-elevated);
+        }
+
+        .list-item-icon {
+            display: flex;
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .list-item-content {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .list-item-content::before {
+            display: none;
+        }
+
+        .list-item-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .list-item:hover .list-item-title {
+            color: var(--accent);
+        }
+
+        .list-item-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: var(--space-2);
+            padding-left: 0;
+            flex-wrap: wrap;
+            overflow: hidden;
+        }
+
+        .list-item-meta .repo {
+            color: var(--text-muted);
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .list-item-meta .assignee { color: var(--accent); }
+        .list-item-meta .countdown { color: var(--text-muted); }
+        .list-item-meta .review { color: var(--warning); }
+        .list-item-meta .stars { color: var(--warning); }
+        .list-item-meta .day-label { color: var(--accent); font-weight: 500; }
+
+        .list-item-labels {
+            display: flex;
+            gap: var(--space-2);
+            margin-top: var(--space-2);
+            flex-wrap: wrap;
+            padding-left: 0;
+        }
+
+        .label {
+            font-size: 12px;
+            font-weight: 500;
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            border: none;
+        }
+
+        /* ========== Empty & Loading States ========== */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-12) var(--space-6);
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 40px;
+            margin-bottom: var(--space-4);
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 14px;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-12);
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .loading-dots span {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: var(--radius-full);
+            animation: loading-dot 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0; }
+
+        @keyframes loading-dot {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ========== Fun Widgets ========== */
+        .fun-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-6);
+            margin-bottom: var(--space-10);
+        }
+
+        @media (max-width: 768px) {
+            .fun-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .fun-widget {
+            display: flex;
+            gap: var(--space-4);
+            padding: var(--space-5);
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            align-items: center;
+            box-shadow: var(--shadow-md);
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .fun-widget:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--border-hover);
+        }
+
+        .fun-widget-image {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--bg-elevated);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fun-widget-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .fun-widget-image .placeholder {
+            color: var(--text-muted);
+            font-size: 24px;
+        }
+
+        .fun-widget-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-md);
+        }
+
+        .fun-widget-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--text-muted);
+        }
+
+        .fun-widget-icon.ccb-icon {
+            background: var(--accent-muted);
+        }
+
+        .fun-widget-icon.ccb-icon svg {
+            color: var(--accent);
+        }
+
+        .ccb-widget {
+            min-width: 0;
+        }
+
+        .fun-widget-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .fun-widget-meta {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-2);
+        }
+
+        .fun-widget-meta::before {
+            display: none;
+        }
+
+        .fun-widget-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.5;
+        }
+
+        .fun-widget-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .fun-widget-title a:hover {
+            color: var(--accent);
+        }
+
+        .fun-widget-refresh {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-out);
+            flex-shrink: 0;
+        }
+
+        .fun-widget-refresh:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        .fun-widget-refresh svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .fun-widget-refresh.spinning svg {
+            animation: spin 0.5s ease;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== Quick Links ========== */
+        .quick-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            background: var(--bg-elevated);
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: var(--font-sans);
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .quick-link::before {
+            display: none;
+        }
+
+        .quick-link:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .quick-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .quick-link.dragging {
+            opacity: 0.5;
+        }
+
+        .quick-link.drag-over {
+            background: var(--accent-muted);
+        }
+
+        /* ========== Icon Picker ========== */
+        .ql-icon-btn {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-out);
+            position: relative;
+        }
+
+        .ql-icon-btn:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .ql-icon-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .ql-icon-picker {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 100;
+            margin-top: 4px;
+            padding: 8px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+        }
+
+        .ql-icon-option {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .ql-icon-option:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .ql-icon-option.selected {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-muted);
+        }
+
+        .ql-icon-option svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ========== Footer ========== */
+        .footer {
+            text-align: center;
+            padding: var(--space-12) var(--space-6);
+            font-size: 14px;
+            font-family: var(--font-sans);
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: var(--space-8);
+        }
+
+        .footer-brand {
+            margin-bottom: var(--space-3);
+        }
+
+        .footer-brand a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .footer-brand a:hover {
+            color: var(--accent);
+        }
+
+        .footer-tagline {
+            color: var(--text-muted);
+            margin-bottom: var(--space-3);
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        .footer-tagline::before {
+            display: none;
+        }
+
+        .footer-meta {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* ========== Calendar Status ========== */
+        .calendar-status {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .calendar-reconnect {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: var(--space-1) var(--space-2);
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 500;
+            background: var(--error);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: white;
+            cursor: pointer;
+            transition: background var(--duration-fast);
+        }
+
+        .calendar-reconnect:hover {
+            background: #dc2626;
+        }
+
+        .calendar-expiry-warning {
+            font-size: 12px;
+            color: var(--warning);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ========== Modal ========== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.95) translateY(10px);
+            transition: transform var(--duration-normal) var(--ease-out);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .modal::-webkit-scrollbar {
+            display: none;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            font-family: var(--font-sans);
+            color: var(--text-primary);
+        }
+
+        .modal-title::before {
+            display: none;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .modal-close:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: var(--space-6);
+        }
+
+        .ticket-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .ticket-meta .label {
+            font-size: 12px;
+        }
+
+        .ticket-body {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .ticket-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .ticket-body::-webkit-scrollbar-thumb {
+            background: var(--border-default);
+            border-radius: 3px;
+        }
+
+        .ticket-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .ticket-article {
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-blue);
+            background: var(--bg-tertiary);
+        }
+
+        .ticket-article summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            font-size: 12px;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }
+
+        .ticket-article summary::-webkit-details-marker { display: none; }
+
+        .ticket-article summary::before {
+            content: '▸';
+            margin-right: 8px;
+            font-size: 18px;
+            color: #f85149;
+            transition: transform 0.15s;
+        }
+
+        .ticket-article[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        .ticket-article[open] {
+            border-left-color: var(--accent-green, #3fb950);
+        }
+
+        .ticket-article-from {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .ticket-article-date {
+            color: var(--text-muted);
+            margin-left: auto;
+            padding-left: 12px;
+        }
+
+        .ticket-article-body {
+            padding: 0 14px 14px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .form-group {
+            margin-bottom: var(--space-5);
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: var(--font-sans);
+            margin-bottom: var(--space-2);
+            color: var(--text-primary);
+        }
+
+        .form-label::before {
+            display: none;
+        }
+
+        .form-hint {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: var(--space-2);
+            line-height: 1.5;
+        }
+
+        .form-hint a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .form-hint a:hover {
+            text-decoration: underline;
+        }
+
+        .form-hint code {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            background: var(--bg-elevated);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--space-3) var(--space-4);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            background: var(--bg-base);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-muted);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-5);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* ========== Screen Reader Only ========== */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--space-6);
+            }
+
+            .nav {
+                flex-wrap: wrap;
+                padding: var(--space-3) var(--space-4);
+                gap: var(--space-3);
+            }
+
+            .nav .quick-links {
+                order: 1;
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .nav-search {
+                order: 2;
+                max-width: none;
+                width: 100%;
+            }
+
+            .nav-controls {
+                order: 0;
+                margin-left: auto;
+            }
+
+            .dashboard {
+                gap: var(--space-4);
+            }
+
+            .card-body {
+                height: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="quick-links" id="quick-links" role="toolbar" aria-label="Quick links"></div>
+        <div class="nav-search">
+            <div class="search-wrapper">
+                <span class="search-prefix">$</span>
+                <label for="repo-search-input" class="sr-only">Search repositories</label>
+                <input type="text" class="search-input" id="repo-search-input" placeholder="Search repos..." autofocus aria-label="Search repositories" aria-autocomplete="list" aria-controls="repo-search-results">
+                <div class="search-results" id="repo-search-results" role="listbox"></div>
+            </div>
+        </div>
+        <div class="nav-controls">
+            <a href="https://github.com/berthuygens?tab=repositories" class="profile-btn" id="profile-link" title="Profile">
+                <div class="placeholder" id="profile-placeholder">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <img src="" alt="Profile" id="profile-pic" style="display: none;">
+            </a>
+            <button class="nav-btn theme-btn" id="theme-btn" title="Toggle theme" aria-label="Toggle theme">
+                <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+            <button class="nav-btn" id="settings-btn" title="Settings" aria-label="Open settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="container">
+            <!-- Dashboard -->
+            <section class="dashboard" aria-label="Dashboard">
+                <!-- Calendar -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title calendar">
+                            <svg viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M4.5 0a.5.5 0 0 1 .5.5V1h6V.5a.5.5 0 0 1 1 0V1h1.5A1.5 1.5 0 0 1 15 2.5v11a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5v-11A1.5 1.5 0 0 1 2.5 1H4V.5a.5.5 0 0 1 .5-.5ZM2.5 2a.5.5 0 0 0-.5.5V4h12V2.5a.5.5 0 0 0-.5-.5h-11ZM2 13.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5V5H2v8.5Z"></path>
+                            </svg>
+                            Upcoming
+                        </div>
+                        <div class="calendar-status" id="calendar-status"></div>
+                    </div>
+                    <div class="card-body" id="calendar-container">
+                        <div class="loading">
+                            <div class="loading-dots"><span></span><span></span><span></span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pull Requests -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title prs">
+                            <svg viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.251 2.251 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm8.25.75a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Z"></path>
+                            </svg>
+                            Pull Requests
+                        </div>
+                        <span class="card-badge" id="prs-count">0</span>
+                    </div>
+                    <div class="card-body" id="prs-container">
+                        <div class="loading">
+                            <div class="loading-dots"><span></span><span></span><span></span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issues -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title issues">
+                            <svg viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
+                                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path>
+                            </svg>
+                            Issues
+                        </div>
+                        <div class="card-toggle" id="issues-toggle">
+                            <button class="card-toggle-btn active" data-view="assigned">Assigned <span id="issues-assigned-count">0</span></button>
+                            <button class="card-toggle-btn" data-view="created">Created <span id="issues-created-count">0</span></button>
+                            <button class="card-toggle-btn" data-view="helpdesk">Helpdesk <span id="issues-helpdesk-count">0</span></button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="issues-container">
+                        <div class="loading">
+                            <div class="loading-dots"><span></span><span></span><span></span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fun Widgets Row -->
+            <section class="fun-row">
+                <!-- Reddit Widget -->
+                <div class="fun-widget">
+                    <div class="fun-widget-image" id="fun-post-image">
+                        <span class="placeholder">🎲</span>
+                    </div>
+                    <div class="fun-widget-body" id="fun-post-body">
+                        <div class="fun-widget-meta">Random Fun</div>
+                        <div class="fun-widget-title"><a href="#">Loading...</a></div>
+                    </div>
+                    <button class="fun-widget-refresh" id="fun-post-refresh" title="Show another">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8V3"></path>
+                        </svg>
+                    </button>
+                </div>
+                <!-- CCB Security Widget -->
+                <div class="fun-widget ccb-widget">
+                    <div class="fun-widget-icon ccb-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                        </svg>
+                    </div>
+                    <div class="fun-widget-body" id="ccb-widget-body">
+                        <div class="fun-widget-meta">CCB Security</div>
+                        <div class="fun-widget-title"><a href="#" id="ccb-news-ticker">loading...</a></div>
+                    </div>
+                </div>
+            </section>
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-tagline">automate.terminals();</div>
+                <div class="footer-meta"><span id="last-updated"></span></div>
+                <span class="status-dot" id="github-status" style="display: none;"></span>
+            </footer>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="settings-modal-title">Settings</h2>
+                <button class="modal-close" id="modal-close" aria-label="Close settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="settings-form">
+                    <div class="form-group">
+                        <label class="form-label">GitHub Personal Access Token</label>
+                        <input type="password" class="form-input" id="github-token" placeholder="ghp_xxxxxxxxxxxx">
+                        <p class="form-hint">
+                            Create at <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">GitHub Settings → Tokens</a><br>
+                            Scopes: <code>repo</code>, <code>read:user</code>
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Repo Search Locations</label>
+                        <input type="text" class="form-input" id="repo-search-locations" placeholder="user:username, org:orgname">
+                        <p class="form-hint">
+                            Comma-separated. Format: <code>user:name</code> or <code>org:name</code>
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Watch All PRs (repos)</label>
+                        <input type="text" class="form-input" id="watch-all-prs-repos" placeholder="owner/repo, owner/repo2">
+                        <p class="form-hint">
+                            Show all open PRs from these repos, not just yours
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">OAuth Worker URL</label>
+                        <input type="text" class="form-input" id="worker-url" placeholder="https://your-worker.workers.dev">
+                        <p class="form-hint">Your Cloudflare Worker URL</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">API Key</label>
+                        <input type="password" class="form-input" id="worker-api-key" placeholder="Bearer token for Worker endpoints">
+                        <p class="form-hint">Authenticates requests to the Worker</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Google Calendar</label>
+                        <button type="button" class="btn btn-primary btn-block" id="google-auth-btn">
+                            Connect Google Calendar
+                        </button>
+                        <p class="form-hint" id="google-auth-status">Not connected</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Profile Picture URL</label>
+                        <input type="text" class="form-input" id="profile-image-url" placeholder="https://github.com/username.png">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Profile Link URL</label>
+                        <input type="text" class="form-input" id="profile-link-url" placeholder="https://github.com/username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Quick Links <span style="color: var(--text-muted); font-weight: 400">(max 5)</span></label>
+                        <div id="quick-links-settings" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                        <p class="form-hint">Name + URL per link. Leave empty to hide. Drag to reorder in the nav bar.</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Save & Reload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div class="modal-overlay" id="ticket-modal" role="dialog" aria-modal="true" aria-labelledby="ticket-modal-title">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="ticket-modal-title">Ticket</h2>
+                <button class="modal-close" id="ticket-modal-close" aria-label="Close ticket details">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="ticket-modal-meta" class="ticket-meta"></div>
+                <div id="ticket-modal-body" class="ticket-body"></div>
+                <a id="ticket-modal-link" href="#" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="margin-top: 16px;">Open in OTOBO</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== Configuration ==========
+        const CONFIG_KEY = 'terminal-home-config';
+
+        function getConfig() {
+            try {
+                return JSON.parse(localStorage.getItem(CONFIG_KEY)) || {};
+            } catch {
+                return {};
+            }
+        }
+
+        function saveConfig(config) {
+            localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+        }
+
+        // Build headers for authenticated Worker requests
+        function workerHeaders() {
+            const config = getConfig();
+            const headers = {};
+            if (config.workerApiKey) {
+                headers['Authorization'] = `Bearer ${config.workerApiKey}`;
+            }
+            return headers;
+        }
+
+        // ========== Theme Toggle ==========
+        function initTheme() {
+            const config = getConfig();
+            const theme = config.theme || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        function toggleTheme() {
+            const config = getConfig();
+            const currentTheme = config.theme || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            config.theme = newTheme;
+            saveConfig(config);
+            document.documentElement.setAttribute('data-theme', newTheme);
+        }
+
+        initTheme();
+        document.getElementById('theme-btn').addEventListener('click', toggleTheme);
+
+        // ========== Reddit Posts ==========
+        const sfwSubreddits = [
+            { name: 'ProgrammerHumor', icon: '💻' },
+            { name: 'aww', icon: '🐱' },
+            { name: 'wholesomememes', icon: '💚' },
+            { name: 'MadeMeSmile', icon: '😊' },
+            { name: 'oddlysatisfying', icon: '✨' },
+            { name: 'NatureIsFuckingLit', icon: '🔥' },
+            { name: 'interestingasfuck', icon: '🤯' },
+            { name: 'EarthPorn', icon: '🌍' },
+            { name: 'foodporn', icon: '🍕' },
+            { name: 'CozyPlaces', icon: '🏠' },
+            { name: 'rarepuppers', icon: '🐕' },
+            { name: 'Eyebleach', icon: '🥰' },
+            { name: 'AnimalsBeingDerps', icon: '🤪' },
+            { name: 'cats', icon: '😺' },
+            { name: 'mildlyinteresting', icon: '🧐' }
+        ];
+
+        let cachedRedditPosts = [];
+        let currentPostIndex = 0;
+
+        async function fetchRedditPosts() {
+            const randomSub = sfwSubreddits[Math.floor(Math.random() * sfwSubreddits.length)];
+
+            try {
+                const response = await fetch(`https://www.reddit.com/r/${randomSub.name}/hot.json?limit=50`);
+                const data = await response.json();
+
+                const posts = data.data.children
+                    .map(child => child.data)
+                    .filter(post => !post.over_18 && !post.stickied && !post.is_video)
+                    .map(post => {
+                        // Get the best available image
+                        let imageUrl = null;
+                        if (post.preview?.images?.[0]?.resolutions) {
+                            // Get a medium resolution preview
+                            const resolutions = post.preview.images[0].resolutions;
+                            const medium = resolutions.find(r => r.width >= 200 && r.width <= 400) || resolutions[resolutions.length - 1];
+                            if (medium) {
+                                imageUrl = medium.url.replace(/&amp;/g, '&');
+                            }
+                        } else if (post.thumbnail && post.thumbnail.startsWith('http')) {
+                            imageUrl = post.thumbnail;
+                        }
+
+                        return {
+                            title: post.title,
+                            subreddit: post.subreddit_name_prefixed,
+                            url: `https://reddit.com${post.permalink}`,
+                            score: post.score,
+                            image: imageUrl
+                        };
+                    });
+
+                return posts;
+            } catch (err) {
+                console.error('Reddit fetch error:', err);
+                return [];
+            }
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return num.toString();
+        }
+
+        function renderRedditPost(post) {
+            const container = document.getElementById('fun-post-body');
+            const imageContainer = document.getElementById('fun-post-image');
+
+            container.innerHTML = `
+                <div class="fun-widget-meta">${escapeHtml(post.subreddit)} · ⬆ ${formatNumber(post.score)}</div>
+                <div class="fun-widget-title"><a href="${escapeHtml(post.url)}" target="_blank" rel="noopener">${escapeHtml(post.title)}</a></div>
+            `;
+
+            if (post.image) {
+                // SECURITY: Use DOM APIs instead of innerHTML to prevent XSS via malicious image URLs
+                imageContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.alt = '';
+                img.addEventListener('error', () => {
+                    imageContainer.innerHTML = '<span class="placeholder">🎲</span>';
+                });
+                // Validate URL scheme before setting src
+                try {
+                    const url = new URL(post.image);
+                    if (url.protocol === 'https:' || url.protocol === 'http:') {
+                        img.src = post.image;
+                        imageContainer.appendChild(img);
+                    } else {
+                        imageContainer.innerHTML = '<span class="placeholder">🎲</span>';
+                    }
+                } catch {
+                    imageContainer.innerHTML = '<span class="placeholder">🎲</span>';
+                }
+            } else {
+                imageContainer.innerHTML = '<span class="placeholder">🎲</span>';
+            }
+        }
+
+        async function showRandomRedditPost() {
+            const container = document.getElementById('fun-post-body');
+            const imageContainer = document.getElementById('fun-post-image');
+
+            if (cachedRedditPosts.length > 0 && currentPostIndex < cachedRedditPosts.length) {
+                renderRedditPost(cachedRedditPosts[currentPostIndex]);
+                currentPostIndex++;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="fun-widget-meta">Loading...</div>
+                <div class="fun-widget-title"><a href="#">Fetching posts...</a></div>
+            `;
+            imageContainer.innerHTML = '<span class="placeholder">⏳</span>';
+
+            const posts = await fetchRedditPosts();
+
+            if (posts.length === 0) {
+                container.innerHTML = `
+                    <div class="fun-widget-meta">Reddit</div>
+                    <div class="fun-widget-title"><a href="https://reddit.com">Could not load posts</a></div>
+                `;
+                imageContainer.innerHTML = '<span class="placeholder">😢</span>';
+                return;
+            }
+
+            cachedRedditPosts = posts.sort(() => Math.random() - 0.5);
+            currentPostIndex = 0;
+            renderRedditPost(cachedRedditPosts[currentPostIndex]);
+            currentPostIndex++;
+        }
+
+        showRandomRedditPost();
+
+        document.getElementById('fun-post-refresh').addEventListener('click', function() {
+            this.classList.add('spinning');
+            if (currentPostIndex >= cachedRedditPosts.length) {
+                cachedRedditPosts = [];
+                currentPostIndex = 0;
+            }
+            showRandomRedditPost().then(() => {
+                this.classList.remove('spinning');
+            });
+        });
+
+        // ========== Quick Links ==========
+        const QUICK_LINK_ICONS = {
+            link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+            robot: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><line x1="12" y1="7" x2="12" y2="11"/><line x1="8" y1="16" x2="8" y2="16.01"/><line x1="16" y1="16" x2="16" y2="16.01"/></svg>',
+            skull: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="8"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="9" r="1.5"/><path d="M9 18h1.5l1.5-2 1.5 2H15"/><path d="M10 22v-2"/><path d="M14 22v-2"/></svg>',
+            sword: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/></svg>',
+            dog: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"/><path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5"/><path d="M8 14v.5"/><path d="M16 14v.5"/><path d="M11.25 16.25h1.5L12 17l-.75-.75Z"/><path d="M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444a11.702 11.702 0 0 0-.479-3.509"/></svg>',
+            circuit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="8" height="8" rx="1"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4 4l3.5 3.5"/><path d="M16.5 16.5L20 20"/><path d="M20 4l-3.5 3.5"/><path d="M7.5 16.5L4 20"/></svg>',
+            drone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6c0-1.1.9-2 2-2h2a2 2 0 0 1 2 2"/><path d="M15 6c0-1.1.9-2 2-2h2a2 2 0 0 1 2 2"/><rect x="7" y="10" width="10" height="4" rx="1"/><path d="M5 6h4"/><path d="M15 6h4"/><path d="M7 12H5a2 2 0 0 1 0-4"/><path d="M17 12h2a2 2 0 0 0 0-4"/><path d="M10 14v3"/><path d="M14 14v3"/><path d="M8 17h8"/></svg>',
+            ufo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8 3 5 5.69 5 9h14c0-3.31-3-6-7-6Z"/><ellipse cx="12" cy="9" rx="10" ry="3"/><path d="M7 12l-2 5"/><path d="M17 12l2 5"/><path d="M12 12v5"/></svg>',
+            city: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="7" width="6" height="14"/><rect x="9" y="3" width="6" height="18"/><rect x="17" y="10" width="6" height="11"/><line x1="4" y1="11" x2="4" y2="11.01"/><line x1="4" y1="15" x2="4" y2="15.01"/><line x1="12" y1="7" x2="12" y2="7.01"/><line x1="12" y1="11" x2="12" y2="11.01"/><line x1="12" y1="15" x2="12" y2="15.01"/><line x1="20" y1="14" x2="20" y2="14.01"/></svg>',
+            arm: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20V8a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v12"/><path d="M6 12h12"/><circle cx="12" cy="8" r="1"/><path d="M9 20h6"/></svg>',
+            brain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4c-1.66 0-3 1.34-3 3a3 3 0 0 0 .88 2.13A3 3 0 0 0 5 14c0 1.3.84 2.4 2 2.82V20a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-3.18A3 3 0 0 0 19 14a3 3 0 0 0-.88-2.13A3 3 0 0 0 19 9c0-1.66-1.34-3-3-3a4 4 0 0 0-4-4Z"/><path d="M12 2v19"/><path d="M8 8h2"/><path d="M14 8h2"/><path d="M8 14h2"/><path d="M14 14h2"/></svg>',
+            vr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="10" rx="3"/><path d="M10 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/><path d="M18 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/><path d="M10 12h4"/></svg>',
+            car: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5l-2-6H7L5 12v5Z"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M5 12h14"/><path d="M3 17h2"/><path d="M19 17h2"/></svg>',
+            shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
+            terminal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
+            monitor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+            cube: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+            document: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+            satellite: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M7.76 16.24a6 6 0 0 1 0-8.49"/><path d="M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>',
+            lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>'
+        };
+
+        function getQuickLinkIcon(key) {
+            return QUICK_LINK_ICONS[key] || QUICK_LINK_ICONS.link;
+        }
+
+        const MAX_QUICK_LINKS = 5;
+
+        function getQuickLinks() {
+            const config = getConfig();
+            if (Array.isArray(config.quickLinks)) {
+                return config.quickLinks.filter(l => l.name && l.url).slice(0, MAX_QUICK_LINKS).map(l => ({ ...l, icon: l.icon || 'link' }));
+            }
+            return [];
+        }
+
+        function renderQuickLinks() {
+            const container = document.getElementById('quick-links');
+            const links = getQuickLinks();
+
+            if (links.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = links.map((link, i) => {
+                // SECURITY: Escape user-controlled values, validate URL protocol
+                const safeUrl = /^https?:\/\//i.test(link.url) ? escapeHtml(link.url) : '#';
+                const safeName = escapeHtml(link.name);
+                return `
+                <a href="${safeUrl}" class="quick-link" draggable="true" data-idx="${i}" target="_blank" rel="noopener">
+                    ${getQuickLinkIcon(link.icon)}
+                    <span>${safeName}</span>
+                </a>
+            `}).join('');
+
+            initDragAndDrop();
+        }
+
+        let draggedElement = null;
+
+        function initDragAndDrop() {
+            const container = document.getElementById('quick-links');
+            const links = container.querySelectorAll('.quick-link');
+
+            links.forEach(link => {
+                link.addEventListener('dragstart', handleDragStart);
+                link.addEventListener('dragend', handleDragEnd);
+                link.addEventListener('dragover', handleDragOver);
+                link.addEventListener('dragenter', handleDragEnter);
+                link.addEventListener('dragleave', handleDragLeave);
+                link.addEventListener('drop', handleDrop);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', this.dataset.idx);
+        }
+
+        function handleDragEnd() {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.quick-link').forEach(el => el.classList.remove('drag-over'));
+            draggedElement = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            if (this !== draggedElement) {
+                this.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave() {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+
+            if (draggedElement && this !== draggedElement) {
+                const container = document.getElementById('quick-links');
+                const allEls = [...container.querySelectorAll('.quick-link')];
+                const fromIdx = allEls.indexOf(draggedElement);
+                const toIdx = allEls.indexOf(this);
+
+                if (fromIdx < toIdx) {
+                    this.parentNode.insertBefore(draggedElement, this.nextSibling);
+                } else {
+                    this.parentNode.insertBefore(draggedElement, this);
+                }
+
+                // Persist new order to config
+                const config = getConfig();
+                const links = getQuickLinks();
+                const reordered = [...container.querySelectorAll('.quick-link')].map(el => links[parseInt(el.dataset.idx)]);
+                config.quickLinks = reordered;
+                saveConfig(config);
+                // Re-render so data-idx attributes match new order
+                renderQuickLinks();
+            }
+        }
+
+        function renderQuickLinksSettings() {
+            const container = document.getElementById('quick-links-settings');
+            const config = getConfig();
+            const links = Array.isArray(config.quickLinks) ? config.quickLinks : [];
+
+            container.innerHTML = '';
+            for (let i = 0; i < MAX_QUICK_LINKS; i++) {
+                const link = links[i] || { name: '', url: '', icon: 'link' };
+                const iconKey = link.icon || 'link';
+                const row = document.createElement('div');
+                row.style.cssText = 'display: flex; gap: 8px; align-items: center;';
+                row.innerHTML = `
+                    <button type="button" class="ql-icon-btn" data-idx="${i}" data-icon="${escapeHtml(iconKey)}" title="Choose icon">${getQuickLinkIcon(iconKey)}</button>
+                    <input type="text" class="form-input ql-name" data-idx="${i}" placeholder="Name" value="${escapeHtml(link.name || '')}" style="flex: 0 0 100px;">
+                    <input type="text" class="form-input ql-url" data-idx="${i}" placeholder="https://..." value="${escapeHtml(link.url || '')}" style="flex: 1;">
+                `;
+                row.querySelector('.ql-icon-btn').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleIconPicker(this);
+                });
+                container.appendChild(row);
+            }
+        }
+
+        function toggleIconPicker(btn) {
+            // Close any existing picker
+            const existing = document.querySelector('.ql-icon-picker');
+            if (existing) {
+                existing.remove();
+                if (existing.parentElement === btn) return;
+            }
+
+            const currentIcon = btn.dataset.icon || 'link';
+            const picker = document.createElement('div');
+            picker.className = 'ql-icon-picker';
+
+            Object.keys(QUICK_LINK_ICONS).forEach(key => {
+                const option = document.createElement('div');
+                option.className = 'ql-icon-option' + (key === currentIcon ? ' selected' : '');
+                option.innerHTML = QUICK_LINK_ICONS[key];
+                option.title = key;
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    btn.dataset.icon = key;
+                    btn.innerHTML = getQuickLinkIcon(key);
+                    picker.remove();
+                });
+                picker.appendChild(option);
+            });
+
+            btn.appendChild(picker);
+
+            // Close picker on outside click
+            function closeOnOutsideClick(e) {
+                if (!picker.contains(e.target) && e.target !== btn) {
+                    picker.remove();
+                    document.removeEventListener('click', closeOnOutsideClick);
+                }
+            }
+            setTimeout(() => document.addEventListener('click', closeOnOutsideClick), 0);
+        }
+
+        function collectQuickLinksFromSettings() {
+            const names = document.querySelectorAll('.ql-name');
+            const urls = document.querySelectorAll('.ql-url');
+            const icons = document.querySelectorAll('.ql-icon-btn');
+            const links = [];
+            for (let i = 0; i < MAX_QUICK_LINKS; i++) {
+                const name = names[i]?.value?.trim();
+                const url = urls[i]?.value?.trim();
+                const icon = icons[i]?.dataset?.icon || 'link';
+                if (name && url) {
+                    links.push({ name, url, icon });
+                }
+            }
+            return links;
+        }
+
+        renderQuickLinks();
+
+        // ========== GitHub API ==========
+        let issuesData = { assigned: [], created: [], helpdesk: [] };
+        let currentIssuesView = 'assigned';
+
+        async function fetchGitHubData() {
+            const config = getConfig();
+            const token = config.githubToken;
+
+            if (!token) {
+                showEmptyState('issues-container', '🔑', 'Add GitHub token in settings');
+                showEmptyState('prs-container', '🔑', 'Add GitHub token in settings');
+                document.getElementById('github-status').classList.add('disconnected');
+                return;
+            }
+
+            const headers = {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            };
+
+            try {
+                const userRes = await fetch('https://api.github.com/user', { headers });
+                if (!userRes.ok) throw new Error(`GitHub auth failed: ${userRes.status}`);
+                const user = await userRes.json();
+
+                const issuesRes = await fetch('https://api.github.com/issues?filter=assigned&state=open&per_page=10', { headers });
+                const assignedIssues = issuesRes.ok ? await issuesRes.json() : [];
+
+                const createdRes = await fetch(`https://api.github.com/search/issues?q=is:issue+is:open+author:${user.login}+-assignee:${user.login}&per_page=15&sort=updated`, { headers });
+                const createdData = await createdRes.json();
+                const createdIssues = (createdData.items || []).filter(issue => issue.assignees && issue.assignees.length > 0);
+
+                issuesData.assigned = assignedIssues;
+                issuesData.created = createdIssues;
+
+                // Default to Created tab if no assigned issues, otherwise Assigned
+                currentIssuesView = assignedIssues.length > 0 ? 'assigned' : 'created';
+                const toggleBtns = document.querySelectorAll('#issues-toggle .card-toggle-btn');
+                toggleBtns.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.view === currentIssuesView);
+                });
+
+                const prsRes = await fetch(`https://api.github.com/search/issues?q=is:pr+is:open+author:${user.login}&per_page=10&sort=updated`, { headers });
+                const prsData = await prsRes.json();
+                const prs = prsData.items || [];
+
+                const reviewRes = await fetch(`https://api.github.com/search/issues?q=is:pr+is:open+review-requested:${user.login}&per_page=5`, { headers });
+                const reviewData = await reviewRes.json();
+                const reviewPrs = reviewData.items || [];
+
+                // Fetch all PRs from watched repos
+                let watchedPrs = [];
+                const watchedRepos = (config.watchAllPRsRepos || '').split(',').map(r => r.trim()).filter(r => r);
+                if (watchedRepos.length > 0) {
+                    const watchedPromises = watchedRepos.map(repo =>
+                        fetch(`https://api.github.com/repos/${repo}/pulls?state=open&per_page=20`, { headers })
+                            .then(res => res.ok ? res.json() : [])
+                            .catch(() => [])
+                    );
+                    const watchedResults = await Promise.all(watchedPromises);
+                    watchedPrs = watchedResults.flat().map(pr => ({
+                        ...pr,
+                        _isWatched: true,
+                        repository_url: `https://api.github.com/repos/${pr.base?.repo?.full_name || ''}`
+                    }));
+                }
+
+                renderIssues(currentIssuesView === 'assigned' ? assignedIssues : createdIssues, currentIssuesView);
+                renderPRs(prs, reviewPrs, watchedPrs);
+
+                document.getElementById('github-status').classList.add('connected');
+                const assignedCountEl = document.getElementById('issues-assigned-count');
+                const createdCountEl = document.getElementById('issues-created-count');
+                assignedCountEl.textContent = assignedIssues.length;
+                createdCountEl.textContent = createdIssues.length;
+                assignedCountEl.classList.toggle('has-items', assignedIssues.length > 0);
+                createdCountEl.classList.toggle('has-items', createdIssues.length > 0);
+                // Calculate unique PR count
+                const allPrIds = new Set(prs.map(p => p.id));
+                reviewPrs.forEach(p => allPrIds.add(p.id));
+                watchedPrs.forEach(p => allPrIds.add(p.id));
+                document.getElementById('prs-count').textContent = allPrIds.size;
+            } catch (err) {
+                console.error('GitHub fetch error:', err);
+                showEmptyState('issues-container', '⚠️', err.message || 'Failed to fetch');
+                showEmptyState('prs-container', '⚠️', err.message || 'Failed to fetch');
+                document.getElementById('github-status').classList.add('disconnected');
+            }
+        }
+
+        document.getElementById('issues-toggle').addEventListener('click', function(e) {
+            const btn = e.target.closest('.card-toggle-btn');
+            if (!btn) return;
+
+            const view = btn.dataset.view;
+            if (view === currentIssuesView) return;
+
+            currentIssuesView = view;
+            this.querySelectorAll('.card-toggle-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (view === 'helpdesk') {
+                renderHelpdeskTickets(issuesData.helpdesk);
+            } else {
+                renderIssues(issuesData[view], view);
+            }
+        });
+
+        // ========== OTRS Helpdesk ==========
+        async function fetchOTRSTickets() {
+            const config = getConfig();
+            const workerUrl = config.workerUrl;
+
+            if (!workerUrl) {
+                console.log('No worker URL configured, skipping OTRS');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${workerUrl}/otrs/tickets`, { headers: workerHeaders() });
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error('OTRS error:', data.error);
+                    const helpdeskCountEl = document.getElementById('issues-helpdesk-count');
+                    helpdeskCountEl.textContent = '!';
+                    helpdeskCountEl.classList.remove('has-items');
+                    return;
+                }
+
+                issuesData.helpdesk = data.tickets || [];
+                otoboTicketBaseUrl = data.ticketBaseUrl || null;
+                const helpdeskCount = data.total || issuesData.helpdesk.length;
+                const helpdeskCountEl = document.getElementById('issues-helpdesk-count');
+                helpdeskCountEl.textContent = helpdeskCount;
+                helpdeskCountEl.classList.toggle('has-items', helpdeskCount > 0);
+
+                // If currently viewing helpdesk, refresh the display
+                if (currentIssuesView === 'helpdesk') {
+                    renderHelpdeskTickets(issuesData.helpdesk);
+                }
+            } catch (err) {
+                console.error('OTRS fetch error:', err);
+                const helpdeskCountEl = document.getElementById('issues-helpdesk-count');
+                helpdeskCountEl.textContent = '!';
+                helpdeskCountEl.classList.remove('has-items');
+            }
+        }
+
+        // Store tickets for popup access
+        let helpdeskTicketsCache = [];
+        let otoboTicketBaseUrl = null;
+
+        function renderHelpdeskTickets(tickets) {
+            const container = document.getElementById('issues-container');
+            helpdeskTicketsCache = tickets;
+
+            if (!tickets.length) {
+                showEmptyState('issues-container', '✨', 'No open tickets');
+                return;
+            }
+
+            container.innerHTML = tickets.map((ticket, index) => {
+                const priorityClass = ticket.Priority?.includes('high') ? 'high' : '';
+
+                return `
+                <div class="list-item" style="cursor: pointer;" onclick="showTicketDetail(${index})">
+                    <svg class="list-item-icon issue" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path>
+                    </svg>
+                    <div class="list-item-content">
+                        <div class="list-item-title">${escapeHtml(ticket.Title)}</div>
+                        <div class="list-item-meta">
+                            <span class="repo">${escapeHtml(ticket.Queue)}</span>
+                            <span>#${ticket.TicketNumber}</span>
+                            <span>${timeAgo(ticket.Changed)}</span>
+                        </div>
+                        <div class="list-item-labels">
+                            <span class="label" style="background: ${ticket.StateType === 'new' ? '#1f6feb' : ticket.StateType === 'open' ? '#238636' : '#8b949e'}20; color: ${ticket.StateType === 'new' ? '#58a6ff' : ticket.StateType === 'open' ? '#3fb950' : '#8b949e'};">
+                                ${escapeHtml(ticket.State)}
+                            </span>
+                            ${ticket.Priority ? `<span class="label" style="background: #8957e520; color: #a371f7;">${escapeHtml(ticket.Priority)}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function showTicketDetail(index) {
+            const ticket = helpdeskTicketsCache[index];
+            if (!ticket) return;
+
+            const ticketModal = document.getElementById('ticket-modal');
+            const ticketUrl = otoboTicketBaseUrl ? `${otoboTicketBaseUrl}?Action=AgentTicketZoom;TicketID=${ticket.TicketID}` : '#';
+
+            document.getElementById('ticket-modal-title').textContent = `#${ticket.TicketNumber}`;
+            document.getElementById('ticket-modal-link').href = ticketUrl;
+
+            // Build meta info
+            const metaHtml = `
+                <span class="label" style="background: ${ticket.StateType === 'new' ? '#1f6feb' : '#238636'}20; color: ${ticket.StateType === 'new' ? '#58a6ff' : '#3fb950'};">
+                    ${escapeHtml(ticket.State)}
+                </span>
+                ${ticket.Priority ? `<span class="label" style="background: #8957e520; color: #a371f7;">${escapeHtml(ticket.Priority)}</span>` : ''}
+                <span class="label" style="background: var(--bg-tertiary); color: var(--text-secondary);">${escapeHtml(ticket.Queue)}</span>
+                <span class="label" style="background: var(--bg-tertiary); color: var(--text-secondary);">${timeAgo(ticket.Changed)}</span>
+            `;
+            document.getElementById('ticket-modal-meta').innerHTML = metaHtml;
+
+            // Build conversation thread from all articles
+            let bodyHtml = `<div class="ticket-title">${escapeHtml(ticket.Title)}</div>`;
+
+            if (ticket.Article && ticket.Article.length > 0) {
+                bodyHtml += [...ticket.Article].reverse().map((article, index) => {
+                    const from = article.From || article.SenderType || 'Unknown';
+                    const created = article.Created ? timeAgo(article.Created) : '';
+                    const body = article.Body || '';
+
+                    return `
+                        <details class="ticket-article"${index === 0 ? ' open' : ''}>
+                            <summary>
+                                <span class="ticket-article-from">${escapeHtml(from)}</span>
+                                <span class="ticket-article-date">${created}</span>
+                            </summary>
+                            <div class="ticket-article-body">${escapeHtml(body)}</div>
+                        </details>
+                    `;
+                }).join('');
+            } else {
+                bodyHtml += '<div class="ticket-article"><div class="ticket-article-body">No content available</div></div>';
+            }
+
+            document.getElementById('ticket-modal-body').innerHTML = bodyHtml;
+            ticketModal.classList.add('active');
+        }
+
+        // ========== Repo Search ==========
+        let searchTimeout = null;
+        const repoSearchInput = document.getElementById('repo-search-input');
+        const repoSearchResults = document.getElementById('repo-search-results');
+
+        let selectedResultIndex = -1;
+
+        repoSearchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            clearTimeout(searchTimeout);
+            selectedResultIndex = -1;
+
+            if (query.length < 2) {
+                repoSearchResults.classList.remove('has-results');
+                repoSearchResults.innerHTML = '';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => searchRepos(query), 300);
+        });
+
+        repoSearchInput.addEventListener('keydown', function(e) {
+            const items = repoSearchResults.querySelectorAll('a.list-item');
+            if (!items.length) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedResultIndex = Math.min(selectedResultIndex + 1, items.length - 1);
+                updateSelectedResult(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedResultIndex = Math.max(selectedResultIndex - 1, 0);
+                updateSelectedResult(items);
+            } else if (e.key === 'Enter' && selectedResultIndex >= 0) {
+                e.preventDefault();
+                items[selectedResultIndex].click();
+            } else if (e.key === 'Escape') {
+                repoSearchResults.classList.remove('has-results');
+                repoSearchResults.innerHTML = '';
+                selectedResultIndex = -1;
+            }
+        });
+
+        repoSearchInput.addEventListener('blur', function() {
+            setTimeout(() => {
+                this.value = '';
+                repoSearchResults.classList.remove('has-results');
+                repoSearchResults.innerHTML = '';
+                selectedResultIndex = -1;
+            }, 150);
+        });
+
+        function updateSelectedResult(items) {
+            items.forEach((item, i) => {
+                item.classList.toggle('selected', i === selectedResultIndex);
+            });
+            if (selectedResultIndex >= 0 && items[selectedResultIndex]) {
+                items[selectedResultIndex].scrollIntoView({ block: 'nearest' });
+            }
+        }
+
+        function getRepoSearchLocations() {
+            const config = getConfig();
+            const locations = config.repoSearchLocations || 'user:berthuygens, org:inbo';
+            return locations.split(',').map(s => s.trim()).filter(s => s);
+        }
+
+        function updateRepoSearchPlaceholder() {
+            const locations = getRepoSearchLocations();
+            const names = locations.map(loc => loc.replace(/^(user:|org:)/, '')).join(' & ');
+            repoSearchInput.placeholder = `Search repos in ${names}...`;
+        }
+
+        updateRepoSearchPlaceholder();
+
+        async function searchRepos(query) {
+            const config = getConfig();
+            const token = config.githubToken;
+
+            if (!token) {
+                repoSearchResults.classList.add('has-results');
+                repoSearchResults.innerHTML = '<div class="empty-state"><div class="empty-icon">🔑</div><div class="empty-text">Add GitHub token in settings</div></div>';
+                return;
+            }
+
+            const headers = {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            };
+
+            try {
+                const locations = getRepoSearchLocations();
+                const locationQuery = locations.join(' ');
+                const searchQuery = encodeURIComponent(`${query} in:name,description ${locationQuery}`);
+                const res = await fetch(`https://api.github.com/search/repositories?q=${searchQuery}&per_page=10&sort=updated`, { headers });
+
+                if (!res.ok) throw new Error('Search failed');
+
+                const data = await res.json();
+                renderRepoResults(data.items || []);
+            } catch (err) {
+                console.error('Repo search error:', err);
+                repoSearchResults.classList.add('has-results');
+                repoSearchResults.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Search failed</div></div>';
+            }
+        }
+
+        function renderRepoResults(repos) {
+            if (!repos.length) {
+                repoSearchResults.classList.add('has-results');
+                repoSearchResults.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No repos found</div></div>';
+                return;
+            }
+
+            repoSearchResults.classList.add('has-results');
+            repoSearchResults.innerHTML = repos.map(repo => `
+                <a href="${safeHref(repo.html_url)}" class="list-item" target="_blank" rel="noopener">
+                    <svg class="list-item-icon repo" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path>
+                    </svg>
+                    <div class="list-item-content">
+                        <div class="list-item-title"><span style="color: var(--text-muted)">${escapeHtml(repo.owner.login)}/</span>${escapeHtml(repo.name)}</div>
+                        <div class="list-item-meta">
+                            ${repo.description ? `<span>${escapeHtml(repo.description.substring(0, 50))}${repo.description.length > 50 ? '...' : ''}</span>` : ''}
+                            ${repo.stargazers_count > 0 ? `<span class="stars">★ ${repo.stargazers_count}</span>` : ''}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function renderIssues(issues, view = 'assigned') {
+            const container = document.getElementById('issues-container');
+
+            if (!issues.length) {
+                const emptyMsg = view === 'assigned' ? 'No assigned issues' : 'No issues assigned to others';
+                showEmptyState('issues-container', '✨', emptyMsg);
+                return;
+            }
+
+            container.innerHTML = issues.map(issue => {
+                const repoName = issue.repository?.full_name || issue.repository_url?.split('/').slice(-2).join('/') || '';
+                const assigneeInfo = view === 'created' && issue.assignees?.length
+                    ? `<span class="assignee">→ ${issue.assignees.map(a => escapeHtml(a.login)).join(', ')}</span>`
+                    : '';
+
+                return `
+                <a href="${safeHref(issue.html_url)}" class="list-item" target="_blank" rel="noopener">
+                    <svg class="list-item-icon issue" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
+                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path>
+                    </svg>
+                    <div class="list-item-content">
+                        <div class="list-item-title">${escapeHtml(issue.title)}</div>
+                        <div class="list-item-meta">
+                            <span class="repo">${repoName}</span>
+                            ${assigneeInfo}
+                            <span>#${issue.number}</span>
+                            <span>${timeAgo(issue.updated_at)}</span>
+                        </div>
+                        ${issue.labels?.length ? `
+                            <div class="list-item-labels">
+                                ${issue.labels.slice(0, 3).map(label => `
+                                    <span class="label" style="background: #${label.color}20; color: #${label.color};">
+                                        ${escapeHtml(label.name)}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                </a>
+            `}).join('');
+        }
+
+        function renderPRs(prs, reviewPrs = [], watchedPrs = []) {
+            const container = document.getElementById('prs-container');
+
+            const allPrs = [...prs];
+            const prIds = new Set(prs.map(p => p.id));
+            reviewPrs.forEach(pr => {
+                if (!prIds.has(pr.id)) {
+                    pr._isReview = true;
+                    allPrs.push(pr);
+                    prIds.add(pr.id);
+                }
+            });
+            watchedPrs.forEach(pr => {
+                if (!prIds.has(pr.id)) {
+                    allPrs.push(pr);
+                    prIds.add(pr.id);
+                }
+            });
+
+            if (!allPrs.length) {
+                showEmptyState('prs-container', '🎉', 'No open pull requests');
+                return;
+            }
+
+            container.innerHTML = allPrs.map(pr => `
+                <a href="${safeHref(pr.html_url)}" class="list-item" target="_blank" rel="noopener">
+                    <svg class="list-item-icon pr" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.251 2.251 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm8.25.75a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Z"></path>
+                    </svg>
+                    <div class="list-item-content">
+                        <div class="list-item-title">${escapeHtml(pr.title)}</div>
+                        <div class="list-item-meta">
+                            <span class="repo">${pr.repository_url?.split('/').slice(-2).join('/') || ''}</span>
+                            <span>#${pr.number}</span>
+                            <span>${timeAgo(pr.updated_at)}</span>
+                            ${pr._isReview ? '<span class="review">review</span>' : ''}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // ========== Google Calendar API ==========
+        // SECURITY: Store access token in memory only, never in localStorage
+        let _googleToken = null;
+        let _googleTokenExpiry = 0;
+
+        async function getAccessToken() {
+            const config = getConfig();
+            if (!config.workerUrl) return null;
+
+            // Return cached in-memory token if still valid
+            if (_googleToken && _googleTokenExpiry > Date.now()) {
+                return _googleToken;
+            }
+
+            try {
+                const res = await fetch(`${config.workerUrl}/token`, { headers: workerHeaders() });
+                const data = await res.json();
+
+                if (data.error) {
+                    if (data.error === 'not_authenticated') {
+                        _googleToken = null;
+                        _googleTokenExpiry = 0;
+                        config.googleConnected = false;
+                        delete config.googleAccessToken;
+                        delete config.googleTokenExpiry;
+                        saveConfig(config);
+                    }
+                    return null;
+                }
+
+                // SECURITY: Keep token in memory only, not in localStorage
+                _googleToken = data.access_token;
+                _googleTokenExpiry = Date.now() + (data.expires_in * 1000);
+                config.googleConnected = true;
+                delete config.googleAccessToken;
+                delete config.googleTokenExpiry;
+                saveConfig(config);
+                return _googleToken;
+            } catch (err) {
+                console.error('Failed to get token:', err);
+                return null;
+            }
+        }
+
+        function triggerGoogleReconnect() {
+            const config = getConfig();
+            if (!config.workerUrl) {
+                alert('Please set your OAuth Worker URL in settings first');
+                document.getElementById('settings-btn').click();
+                return;
+            }
+
+            const width = 500, height = 600;
+            const left = (window.innerWidth - width) / 2;
+            const top = (window.innerHeight - height) / 2;
+            window.open(`${config.workerUrl}/auth`, 'google-oauth', `width=${width},height=${height},left=${left},top=${top}`);
+        }
+
+        function updateCalendarStatus() {
+            const config = getConfig();
+            const statusEl = document.getElementById('calendar-status');
+
+            // Worker URL configured = auto-refresh available, show status accordingly
+            if (config.workerUrl) {
+                if (_googleToken || config.googleConnected) {
+                    statusEl.innerHTML = `<span style="font-size: 12px; color: var(--success); font-weight: 500;">✓ Auto</span>`;
+                } else {
+                    statusEl.innerHTML = `
+                        <button class="calendar-reconnect" onclick="triggerGoogleReconnect()">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8V3"></path>
+                            </svg>
+                            Connect
+                        </button>
+                    `;
+                }
+                return;
+            }
+
+            if (!_googleToken) {
+                statusEl.innerHTML = `
+                    <button class="calendar-reconnect" onclick="triggerGoogleReconnect()">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8V3"></path>
+                        </svg>
+                        Connect
+                    </button>
+                `;
+                return;
+            }
+
+            const timeLeft = _googleTokenExpiry - Date.now();
+            if (timeLeft <= 0) {
+                statusEl.innerHTML = `
+                    <span class="calendar-expiry-warning">Expired</span>
+                    <button class="calendar-reconnect" onclick="triggerGoogleReconnect()">Reconnect</button>
+                `;
+            } else if (timeLeft < 600000) {
+                statusEl.innerHTML = `
+                    <span class="calendar-expiry-warning">${Math.ceil(timeLeft / 60000)}m</span>
+                    <button class="calendar-reconnect" onclick="triggerGoogleReconnect()">Refresh</button>
+                `;
+            } else {
+                statusEl.innerHTML = `<span style="font-size: 13px; color: var(--text-muted);">${Math.floor(timeLeft / 60000)}m</span>`;
+            }
+        }
+
+        async function fetchNextMeeting() {
+            const config = getConfig();
+            updateCalendarStatus();
+
+            if (config.workerUrl) {
+                const token = await getAccessToken();
+                updateCalendarStatus();
+                if (token) {
+                    fetchCalendarData();
+                } else {
+                    showEmptyState('calendar-container', '🔑', 'Click Connect to link Calendar');
+                }
+                return;
+            }
+
+            if (!_googleToken) {
+                showEmptyState('calendar-container', '🔑', 'Set Worker URL in settings');
+                return;
+            }
+
+            if (_googleTokenExpiry && Date.now() > _googleTokenExpiry) {
+                showEmptyState('calendar-container', '🔄', 'Session expired');
+                return;
+            }
+
+            fetchCalendarData();
+        }
+
+        async function fetchCalendarData() {
+            // SECURITY: Use in-memory token, fall back to fetching fresh one
+            const token = _googleToken || await getAccessToken();
+            if (!token) {
+                showEmptyState('calendar-container', '🔑', 'Click Connect to link Calendar');
+                return;
+            }
+
+            try {
+                const now = new Date().toISOString();
+                const url = `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${now}&maxResults=20&singleEvents=true&orderBy=startTime`;
+
+                const res = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.status === 401) {
+                    _googleToken = null;
+                    _googleTokenExpiry = 0;
+                    updateCalendarStatus();
+                    showEmptyState('calendar-container', '🔄', 'Session expired');
+                    return;
+                }
+
+                if (!res.ok) throw new Error(`Calendar API error: ${res.status}`);
+
+                const data = await res.json();
+                let events = data.items || [];
+
+                const locationKeywords = ['home', 'thuis', 'office', 'kantoor', 'bureau', 'ht bxl', 'vac gent'];
+                events = events.filter(event => {
+                    const title = (event.summary || '').toLowerCase();
+                    return !locationKeywords.some(keyword => title.includes(keyword));
+                }).slice(0, 4);
+
+                if (!events.length) {
+                    showEmptyState('calendar-container', '📅', 'No upcoming meetings');
+                    return;
+                }
+
+                renderMeetings(events);
+            } catch (err) {
+                console.error('Calendar fetch error:', err);
+                showEmptyState('calendar-container', '⚠️', err.message || 'Failed to fetch');
+            }
+        }
+
+        function renderMeetings(events) {
+            const container = document.getElementById('calendar-container');
+            const now = new Date();
+
+            container.innerHTML = events.map(event => {
+                const startDate = event.start.dateTime ? new Date(event.start.dateTime) : new Date(event.start.date);
+                const isAllDay = !event.start.dateTime;
+                const isToday = startDate.toDateString() === now.toDateString();
+                const isTomorrow = startDate.toDateString() === new Date(now.getTime() + 86400000).toDateString();
+
+                let dayLabel = isToday ? 'Today' : isTomorrow ? 'Tomorrow' : startDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+                const timeStr = isAllDay ? 'All day' : startDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                const countdown = getEventCountdown(startDate, isAllDay);
+
+                return `
+                    <a href="${safeHref(event.htmlLink || 'https://calendar.google.com')}" class="list-item" target="_blank" rel="noopener">
+                        <svg class="list-item-icon calendar" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M4.5 1.75v1.5H2.5a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2v-1.5a.75.75 0 0 0-1.5 0v1.5h-4v-1.5a.75.75 0 0 0-1.5 0ZM2.5 6h11v7.25H2.5V6Z"/>
+                        </svg>
+                        <div class="list-item-content">
+                            <div class="list-item-title">${escapeHtml(event.summary || 'No title')}</div>
+                            <div class="list-item-meta">
+                                <span>${timeStr}</span>
+                                <span class="day-label">${dayLabel}</span>
+                                <span class="countdown">${countdown}</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        function getEventCountdown(date, isAllDay) {
+            const now = new Date();
+            let diff = date - now;
+
+            if (isAllDay) {
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const eventDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                diff = eventDay - today;
+            }
+
+            if (diff < 0) return 'Now';
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            if (isAllDay) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                if (days === 0) return 'Today';
+                if (days === 1) return 'Tomorrow';
+                return `in ${days}d`;
+            }
+
+            if (hours < 1) return `in ${minutes}m`;
+            if (hours < 24) return `in ${hours}h ${minutes}m`;
+            return `in ${Math.floor(hours / 24)}d`;
+        }
+
+        // ========== Utilities ==========
+        function showEmptyState(containerId, icon, text) {
+            document.getElementById(containerId).innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">${icon}</div>
+                    <div class="empty-text">${escapeHtml(text)}</div>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function safeHref(url) {
+            if (!url || !/^https?:\/\//i.test(url)) return '#';
+            return escapeHtml(url);
+        }
+
+        function timeAgo(dateString) {
+            const seconds = Math.floor((new Date() - new Date(dateString)) / 1000);
+            const intervals = [
+                { label: 'y', seconds: 31536000 },
+                { label: 'mo', seconds: 2592000 },
+                { label: 'd', seconds: 86400 },
+                { label: 'h', seconds: 3600 },
+                { label: 'm', seconds: 60 }
+            ];
+            for (const interval of intervals) {
+                const count = Math.floor(seconds / interval.seconds);
+                if (count >= 1) return `${count}${interval.label} ago`;
+            }
+            return 'just now';
+        }
+
+        // ========== Modal ==========
+        const modal = document.getElementById('modal');
+        const settingsBtn = document.getElementById('settings-btn');
+        const modalClose = document.getElementById('modal-close');
+        const settingsForm = document.getElementById('settings-form');
+
+        settingsBtn.addEventListener('click', () => {
+            const config = getConfig();
+            document.getElementById('github-token').value = config.githubToken || '';
+            document.getElementById('repo-search-locations').value = config.repoSearchLocations || 'user:berthuygens, org:inbo';
+            document.getElementById('watch-all-prs-repos').value = config.watchAllPRsRepos || '';
+            document.getElementById('worker-url').value = config.workerUrl || '';
+            document.getElementById('worker-api-key').value = config.workerApiKey || '';
+            document.getElementById('profile-image-url').value = config.profileImageUrl || '';
+            document.getElementById('profile-link-url').value = config.profileLinkUrl || 'https://github.com/berthuygens?tab=repositories';
+            renderQuickLinksSettings();
+            updateGoogleAuthStatus();
+            modal.classList.add('active');
+        });
+
+        modalClose.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+        // Ticket modal close handlers
+        const ticketModal = document.getElementById('ticket-modal');
+        const ticketModalClose = document.getElementById('ticket-modal-close');
+        ticketModalClose.addEventListener('click', () => ticketModal.classList.remove('active'));
+        ticketModal.addEventListener('click', (e) => { if (e.target === ticketModal) ticketModal.classList.remove('active'); });
+
+        // Close modals on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (ticketModal.classList.contains('active')) {
+                    ticketModal.classList.remove('active');
+                } else if (modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                }
+            }
+        });
+
+        settingsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const config = getConfig();
+            config.githubToken = document.getElementById('github-token').value;
+            config.repoSearchLocations = document.getElementById('repo-search-locations').value || 'user:berthuygens, org:inbo';
+            config.watchAllPRsRepos = document.getElementById('watch-all-prs-repos').value;
+            config.workerUrl = document.getElementById('worker-url').value;
+            config.workerApiKey = document.getElementById('worker-api-key').value;
+            config.profileImageUrl = document.getElementById('profile-image-url').value;
+            config.profileLinkUrl = document.getElementById('profile-link-url').value || 'https://github.com/berthuygens?tab=repositories';
+            config.quickLinks = collectQuickLinksFromSettings();
+            // Clean up legacy custom link fields
+            delete config.customLinkName;
+            delete config.customLinkUrl;
+            saveConfig(config);
+            modal.classList.remove('active');
+            updateRepoSearchPlaceholder();
+            init();
+        });
+
+        async function updateGoogleAuthStatus() {
+            const config = getConfig();
+            const statusEl = document.getElementById('google-auth-status');
+            const btnEl = document.getElementById('google-auth-btn');
+
+            if (!config.workerUrl) {
+                statusEl.textContent = 'Set Worker URL first';
+                statusEl.style.color = 'var(--warning)';
+                btnEl.textContent = 'Connect Google Calendar';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${config.workerUrl}/status`, { headers: workerHeaders() });
+                const data = await res.json();
+                if (data.authenticated) {
+                    statusEl.textContent = 'Connected (auto-refresh enabled)';
+                    statusEl.style.color = 'var(--success)';
+                    btnEl.textContent = 'Reconnect';
+                } else {
+                    statusEl.textContent = 'Not connected';
+                    statusEl.style.color = '';
+                    btnEl.textContent = 'Connect Google Calendar';
+                }
+            } catch {
+                statusEl.textContent = 'Worker not reachable';
+                statusEl.style.color = 'var(--error)';
+            }
+        }
+
+        // SECURITY: Hardcoded trusted worker origins - never trust localStorage for origin validation
+        const TRUSTED_WORKER_ORIGINS = [
+            'https://sysopbeta-oauth.sysopbeta.workers.dev',
+            'http://localhost:8787', // Wrangler dev server
+        ];
+
+        window.addEventListener('message', (event) => {
+            if (!event.origin) return;
+
+            // Validate against hardcoded trusted origins, not user-controlled localStorage
+            const isTrustedOrigin = TRUSTED_WORKER_ORIGINS.includes(event.origin);
+            if (!isTrustedOrigin) {
+                console.warn('Rejected postMessage from untrusted origin:', event.origin);
+                return;
+            }
+
+            if (event.data?.type === 'oauth-success') {
+                const config = getConfig();
+                // SECURITY: Store token in memory only, not in localStorage
+                _googleToken = event.data.accessToken;
+                _googleTokenExpiry = Date.now() + (event.data.expiresIn * 1000);
+                config.googleConnected = true;
+                delete config.googleAccessToken;
+                delete config.googleTokenExpiry;
+                saveConfig(config);
+                updateGoogleAuthStatus();
+                updateCalendarStatus();
+                fetchCalendarData();
+            }
+        });
+
+        document.getElementById('google-auth-btn').addEventListener('click', () => {
+            const config = getConfig();
+            const workerUrl = document.getElementById('worker-url').value || config.workerUrl;
+            if (!workerUrl) {
+                alert('Please enter your OAuth Worker URL first');
+                return;
+            }
+            config.workerUrl = workerUrl;
+            saveConfig(config);
+
+            const width = 500, height = 600;
+            const left = (window.innerWidth - width) / 2;
+            const top = (window.innerHeight - height) / 2;
+            window.open(`${workerUrl}/auth`, 'google-oauth', `width=${width},height=${height},left=${left},top=${top}`);
+        });
+
+        // ========== Last Updated ==========
+        function updateLastUpdated() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('last-updated').textContent = `${time}`;
+        }
+
+        // ========== Profile ==========
+        function updateProfilePicture() {
+            const config = getConfig();
+            const profileLink = document.getElementById('profile-link');
+            const profilePic = document.getElementById('profile-pic');
+            const profilePlaceholder = document.getElementById('profile-placeholder');
+
+            profileLink.href = config.profileLinkUrl || 'https://github.com/berthuygens?tab=repositories';
+
+            if (config.profileImageUrl) {
+                profilePic.src = config.profileImageUrl;
+                profilePic.style.display = 'block';
+                profilePlaceholder.style.display = 'none';
+                profilePic.onerror = () => {
+                    profilePic.style.display = 'none';
+                    profilePlaceholder.style.display = 'flex';
+                };
+            } else {
+                profilePic.style.display = 'none';
+                profilePlaceholder.style.display = 'flex';
+            }
+        }
+
+        // ========== CCB News Ticker ==========
+        let ccbNewsItems = [];
+        let ccbCurrentIndex = 0;
+        let ccbTickerInterval = null;
+        let ccbTypewriterTimeout = null;
+
+        async function fetchCCBNews() {
+            const ticker = document.getElementById('ccb-news-ticker');
+            const config = getConfig();
+
+            if (!config.workerUrl) {
+                ticker.textContent = 'set worker url';
+                ticker.href = '#';
+                return;
+            }
+
+            try {
+                const rssUrl = `${config.workerUrl}/rss?url=${encodeURIComponent('https://ccb.belgium.be/advisories.xml')}`;
+                const response = await fetch(rssUrl, { headers: workerHeaders() });
+                const xmlText = await response.text();
+
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+                const items = xmlDoc.querySelectorAll('item');
+
+                ccbNewsItems = Array.from(items).slice(0, 10).map(item => ({
+                    title: item.querySelector('title')?.textContent || 'No title',
+                    link: item.querySelector('link')?.textContent || '#'
+                }));
+
+                if (ccbNewsItems.length > 0) {
+                    ccbCurrentIndex = Math.floor(Math.random() * ccbNewsItems.length);
+                    typewriteCCBNews();
+                    if (ccbTickerInterval) clearInterval(ccbTickerInterval);
+                    ccbTickerInterval = setInterval(rotateCCBNews, 20000);
+                } else {
+                    ticker.textContent = 'no advisories';
+                    ticker.href = 'https://ccb.belgium.be/advisories';
+                }
+            } catch {
+                ticker.textContent = 'ccb unavailable';
+                ticker.href = 'https://ccb.belgium.be/advisories';
+            }
+        }
+
+        function typewriteCCBNews() {
+            const ticker = document.getElementById('ccb-news-ticker');
+            if (!ccbNewsItems.length) return;
+            if (ccbTypewriterTimeout) clearTimeout(ccbTypewriterTimeout);
+
+            const item = ccbNewsItems[ccbCurrentIndex];
+            ticker.href = item.link;
+            ticker.textContent = '';
+            const text = item.title;
+            let charIndex = 0;
+
+            function typeNextChar() {
+                if (charIndex < text.length) {
+                    ticker.textContent = text.substring(0, charIndex + 1);
+                    charIndex++;
+                    ccbTypewriterTimeout = setTimeout(typeNextChar, 30);
+                }
+            }
+            typeNextChar();
+        }
+
+        function rotateCCBNews() {
+            ccbCurrentIndex = (ccbCurrentIndex + 1) % ccbNewsItems.length;
+            typewriteCCBNews();
+        }
+
+        // ========== Init ==========
+        function init() {
+            document.getElementById('github-status').className = 'status-dot';
+            updateProfilePicture();
+            fetchGitHubData();
+            fetchOTRSTickets();
+            fetchNextMeeting();
+            updateLastUpdated();
+            fetchCCBNews();
+        }
+
+        init();
+        setInterval(init, 5 * 60 * 1000);
+        setInterval(updateCalendarStatus, 60 * 1000);
+    </script>
+</body>
+</html>
