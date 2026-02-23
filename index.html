@@ -3043,7 +3043,7 @@
                 showEmptyState('ccb-container', '🛡️', 'No CCB advisories');
                 return;
             }
-            startNewsRotation('ccb-container', 'ccb-progress', items, 7, false, 18000);
+            startNewsRotation('ccb-container', 'ccb-progress', items, 5, false, 18000);
         }
 
         async function fetchSecurityNews() {
@@ -3057,7 +3057,7 @@
                 showEmptyState('security-news-container', '🔒', 'No security news available');
                 return;
             }
-            startNewsRotation('security-news-container', 'security-progress', items, 7, true, 18000);
+            startNewsRotation('security-news-container', 'security-progress', items, 5, true, 18000);
         }
 
         async function fetchTechNews() {
@@ -3071,7 +3071,7 @@
                 showEmptyState('tech-news-container', '💻', 'No tech news available');
                 return;
             }
-            startNewsRotation('tech-news-container', 'tech-progress', items, 7, false, 18000);
+            startNewsRotation('tech-news-container', 'tech-progress', items, 5, false, 18000);
         }
 
         // ========== Init ==========
