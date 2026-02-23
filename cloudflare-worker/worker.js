@@ -334,7 +334,8 @@ async function handleRSS(url, corsHeader) {
     'https://krebsonsecurity.com/feed/',
     'https://aws.amazon.com/blogs/security/feed/',
     'https://isc.sans.edu/rssfeed.xml',
-    'https://api.msrc.microsoft.com/update-guide/rss'
+    'https://api.msrc.microsoft.com/update-guide/rss',
+    'https://hnrss.org/frontpage'
   ];
 
   if (!allowedFeeds.includes(feedUrl)) {
