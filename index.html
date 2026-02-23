@@ -613,18 +613,6 @@
             color: var(--text-muted);
         }
 
-        .fun-widget-icon.ccb-icon {
-            background: var(--accent-muted);
-        }
-
-        .fun-widget-icon.ccb-icon svg {
-            color: var(--accent);
-        }
-
-        .ccb-widget {
-            min-width: 0;
-        }
-
         .fun-widget-body {
             flex: 1;
             min-width: 0;
@@ -695,6 +683,82 @@
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+
+        /* ========== Security News ========== */
+        .security-news-section {
+            margin-bottom: var(--space-10);
+        }
+
+        .security-news-section .card-body {
+            height: 420px;
+        }
+
+        .security-news-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            text-decoration: none;
+            color: inherit;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-1);
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .security-news-item:hover {
+            background: var(--bg-elevated);
+        }
+
+        .security-news-item:hover .security-news-title {
+            color: var(--accent);
+        }
+
+        .source-badge {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        .source-ccb { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .source-bleeping { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+        .source-krebs { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+        .source-aws { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
+        .source-sans { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+        .source-msrc { background: rgba(14, 165, 233, 0.15); color: #38bdf8; }
+
+        .security-news-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .security-news-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .security-news-time {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .security-news-section .card-body {
+                height: 350px;
+            }
         }
 
         /* ========== Quick Links ========== */
@@ -1337,9 +1401,29 @@
                 </div>
             </section>
 
+            <!-- Security News -->
+            <section class="security-news-section">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            Security News
+                        </div>
+                        <span class="card-badge" id="security-news-count">0</span>
+                    </div>
+                    <div class="card-body" id="security-news-container">
+                        <div class="loading">
+                            <div class="loading-dots"><span></span><span></span><span></span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Fun Widgets Row -->
             <section class="fun-row">
-                <!-- Reddit Widget -->
+                <!-- Reddit Widget 1 -->
                 <div class="fun-widget">
                     <div class="fun-widget-image" id="fun-post-image">
                         <span class="placeholder">🎲</span>
@@ -1354,17 +1438,20 @@
                         </svg>
                     </button>
                 </div>
-                <!-- CCB Security Widget -->
-                <div class="fun-widget ccb-widget">
-                    <div class="fun-widget-icon ccb-icon">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                <!-- Reddit Widget 2 -->
+                <div class="fun-widget">
+                    <div class="fun-widget-image" id="fun-post-image-2">
+                        <span class="placeholder">🎲</span>
+                    </div>
+                    <div class="fun-widget-body" id="fun-post-body-2">
+                        <div class="fun-widget-meta">Random Fun</div>
+                        <div class="fun-widget-title"><a href="#">Loading...</a></div>
+                    </div>
+                    <button class="fun-widget-refresh" id="fun-post-refresh-2" title="Show another">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8V3"></path>
                         </svg>
-                    </div>
-                    <div class="fun-widget-body" id="ccb-widget-body">
-                        <div class="fun-widget-meta">CCB Security</div>
-                        <div class="fun-widget-title"><a href="#" id="ccb-news-ticker">loading...</a></div>
-                    </div>
+                    </button>
                 </div>
             </section>
             <!-- Footer -->
@@ -1532,8 +1619,7 @@
             { name: 'mildlyinteresting', icon: '🧐' }
         ];
 
-        let cachedRedditPosts = [];
-        let currentPostIndex = 0;
+        const redditState = { '': { posts: [], index: 0 }, '-2': { posts: [], index: 0 } };
 
         async function fetchRedditPosts() {
             const randomSub = sfwSubreddits[Math.floor(Math.random() * sfwSubreddits.length)];
@@ -1546,10 +1632,8 @@
                     .map(child => child.data)
                     .filter(post => !post.over_18 && !post.stickied && !post.is_video)
                     .map(post => {
-                        // Get the best available image
                         let imageUrl = null;
                         if (post.preview?.images?.[0]?.resolutions) {
-                            // Get a medium resolution preview
                             const resolutions = post.preview.images[0].resolutions;
                             const medium = resolutions.find(r => r.width >= 200 && r.width <= 400) || resolutions[resolutions.length - 1];
                             if (medium) {
@@ -1581,9 +1665,9 @@
             return num.toString();
         }
 
-        function renderRedditPost(post) {
-            const container = document.getElementById('fun-post-body');
-            const imageContainer = document.getElementById('fun-post-image');
+        function renderRedditPost(post, suffix = '') {
+            const container = document.getElementById('fun-post-body' + suffix);
+            const imageContainer = document.getElementById('fun-post-image' + suffix);
 
             container.innerHTML = `
                 <div class="fun-widget-meta">${escapeHtml(post.subreddit)} · ⬆ ${formatNumber(post.score)}</div>
@@ -1598,7 +1682,6 @@
                 img.addEventListener('error', () => {
                     imageContainer.innerHTML = '<span class="placeholder">🎲</span>';
                 });
-                // Validate URL scheme before setting src
                 try {
                     const url = new URL(post.image);
                     if (url.protocol === 'https:' || url.protocol === 'http:') {
@@ -1615,13 +1698,14 @@
             }
         }
 
-        async function showRandomRedditPost() {
-            const container = document.getElementById('fun-post-body');
-            const imageContainer = document.getElementById('fun-post-image');
+        async function showRandomRedditPost(suffix = '') {
+            const state = redditState[suffix];
+            const container = document.getElementById('fun-post-body' + suffix);
+            const imageContainer = document.getElementById('fun-post-image' + suffix);
 
-            if (cachedRedditPosts.length > 0 && currentPostIndex < cachedRedditPosts.length) {
-                renderRedditPost(cachedRedditPosts[currentPostIndex]);
-                currentPostIndex++;
+            if (state.posts.length > 0 && state.index < state.posts.length) {
+                renderRedditPost(state.posts[state.index], suffix);
+                state.index++;
                 return;
             }
 
@@ -1642,22 +1726,27 @@
                 return;
             }
 
-            cachedRedditPosts = posts.sort(() => Math.random() - 0.5);
-            currentPostIndex = 0;
-            renderRedditPost(cachedRedditPosts[currentPostIndex]);
-            currentPostIndex++;
+            state.posts = posts.sort(() => Math.random() - 0.5);
+            state.index = 0;
+            renderRedditPost(state.posts[state.index], suffix);
+            state.index++;
         }
 
-        showRandomRedditPost();
+        // Init both Reddit widgets
+        showRandomRedditPost('');
+        showRandomRedditPost('-2');
 
-        document.getElementById('fun-post-refresh').addEventListener('click', function() {
-            this.classList.add('spinning');
-            if (currentPostIndex >= cachedRedditPosts.length) {
-                cachedRedditPosts = [];
-                currentPostIndex = 0;
-            }
-            showRandomRedditPost().then(() => {
-                this.classList.remove('spinning');
+        ['', '-2'].forEach(suffix => {
+            document.getElementById('fun-post-refresh' + suffix).addEventListener('click', function() {
+                this.classList.add('spinning');
+                const state = redditState[suffix];
+                if (state.index >= state.posts.length) {
+                    state.posts = [];
+                    state.index = 0;
+                }
+                showRandomRedditPost(suffix).then(() => {
+                    this.classList.remove('spinning');
+                });
             });
         });
 
@@ -2776,75 +2865,87 @@
             }
         }
 
-        // ========== CCB News Ticker ==========
-        let ccbNewsItems = [];
-        let ccbCurrentIndex = 0;
-        let ccbTickerInterval = null;
-        let ccbTypewriterTimeout = null;
+        // ========== Security News ==========
+        const SECURITY_FEEDS = [
+            { id: 'ccb', name: 'CCB', url: 'https://ccb.belgium.be/advisories.xml', className: 'source-ccb', format: 'rss' },
+            { id: 'bleeping', name: 'Bleeping', url: 'https://www.bleepingcomputer.com/feed/', className: 'source-bleeping', format: 'rss' },
+            { id: 'krebs', name: 'Krebs', url: 'https://krebsonsecurity.com/feed/', className: 'source-krebs', format: 'rss' },
+            { id: 'aws', name: 'AWS', url: 'https://aws.amazon.com/blogs/security/feed/', className: 'source-aws', format: 'rss' },
+            { id: 'sans', name: 'SANS', url: 'https://isc.sans.edu/rssfeed.xml', className: 'source-sans', format: 'rss' },
+            { id: 'msrc', name: 'MSRC', url: 'https://api.msrc.microsoft.com/update-guide/rss', className: 'source-msrc', format: 'rss' }
+        ];
 
-        async function fetchCCBNews() {
-            const ticker = document.getElementById('ccb-news-ticker');
+        function parseRSSItems(xmlDoc, feed) {
+            const items = [];
+            // Try RSS 2.0 <item> first
+            let entries = xmlDoc.querySelectorAll('item');
+            if (entries.length === 0) {
+                // Try Atom <entry>
+                entries = xmlDoc.querySelectorAll('entry');
+            }
+            Array.from(entries).slice(0, 15).forEach(entry => {
+                const title = entry.querySelector('title')?.textContent || '';
+                // RSS 2.0: <link> text, Atom: <link href="">
+                const linkEl = entry.querySelector('link');
+                const link = linkEl?.getAttribute('href') || linkEl?.textContent || '#';
+                // Date: pubDate (RSS), updated (Atom), dc:date
+                const dateStr = entry.querySelector('pubDate')?.textContent
+                    || entry.querySelector('updated')?.textContent
+                    || entry.querySelector('date')?.textContent
+                    || '';
+                const date = dateStr ? new Date(dateStr) : null;
+                if (title) {
+                    items.push({ title, link, date, feed });
+                }
+            });
+            return items;
+        }
+
+        async function fetchSecurityNews() {
+            const container = document.getElementById('security-news-container');
+            const badge = document.getElementById('security-news-count');
             const config = getConfig();
 
             if (!config.workerUrl) {
-                ticker.textContent = 'set worker url';
-                ticker.href = '#';
+                showEmptyState('security-news-container', '🔧', 'Set worker URL in settings');
                 return;
             }
 
-            try {
-                const rssUrl = `${config.workerUrl}/rss?url=${encodeURIComponent('https://ccb.belgium.be/advisories.xml')}`;
-                const response = await fetch(rssUrl, { headers: workerHeaders() });
-                const xmlText = await response.text();
-
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-                const items = xmlDoc.querySelectorAll('item');
-
-                ccbNewsItems = Array.from(items).slice(0, 10).map(item => ({
-                    title: item.querySelector('title')?.textContent || 'No title',
-                    link: item.querySelector('link')?.textContent || '#'
-                }));
-
-                if (ccbNewsItems.length > 0) {
-                    ccbCurrentIndex = Math.floor(Math.random() * ccbNewsItems.length);
-                    typewriteCCBNews();
-                    if (ccbTickerInterval) clearInterval(ccbTickerInterval);
-                    ccbTickerInterval = setInterval(rotateCCBNews, 20000);
-                } else {
-                    ticker.textContent = 'no advisories';
-                    ticker.href = 'https://ccb.belgium.be/advisories';
+            const results = await Promise.all(SECURITY_FEEDS.map(async (feed) => {
+                try {
+                    const rssUrl = `${config.workerUrl}/rss?url=${encodeURIComponent(feed.url)}`;
+                    const response = await fetch(rssUrl, { headers: workerHeaders() });
+                    if (!response.ok) return [];
+                    const xmlText = await response.text();
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+                    if (xmlDoc.querySelector('parsererror')) return [];
+                    return parseRSSItems(xmlDoc, feed);
+                } catch {
+                    return [];
                 }
-            } catch {
-                ticker.textContent = 'ccb unavailable';
-                ticker.href = 'https://ccb.belgium.be/advisories';
+            }));
+
+            const allItems = results.flat()
+                .sort((a, b) => (b.date || 0) - (a.date || 0))
+                .slice(0, 50);
+
+            if (allItems.length === 0) {
+                showEmptyState('security-news-container', '🛡️', 'No security news available');
+                badge.textContent = '0';
+                return;
             }
-        }
 
-        function typewriteCCBNews() {
-            const ticker = document.getElementById('ccb-news-ticker');
-            if (!ccbNewsItems.length) return;
-            if (ccbTypewriterTimeout) clearTimeout(ccbTypewriterTimeout);
-
-            const item = ccbNewsItems[ccbCurrentIndex];
-            ticker.href = item.link;
-            ticker.textContent = '';
-            const text = item.title;
-            let charIndex = 0;
-
-            function typeNextChar() {
-                if (charIndex < text.length) {
-                    ticker.textContent = text.substring(0, charIndex + 1);
-                    charIndex++;
-                    ccbTypewriterTimeout = setTimeout(typeNextChar, 30);
-                }
-            }
-            typeNextChar();
-        }
-
-        function rotateCCBNews() {
-            ccbCurrentIndex = (ccbCurrentIndex + 1) % ccbNewsItems.length;
-            typewriteCCBNews();
+            badge.textContent = allItems.length;
+            container.innerHTML = allItems.map(item => `
+                <a class="security-news-item" href="${safeHref(item.link)}" target="_blank" rel="noopener">
+                    <span class="source-badge ${escapeHtml(item.feed.className)}">${escapeHtml(item.feed.name)}</span>
+                    <div class="security-news-content">
+                        <div class="security-news-title">${escapeHtml(item.title)}</div>
+                        ${item.date ? `<div class="security-news-time">${timeAgo(item.date.toISOString())}</div>` : ''}
+                    </div>
+                </a>
+            `).join('');
         }
 
         // ========== Init ==========
@@ -2855,7 +2956,7 @@
             fetchOTRSTickets();
             fetchNextMeeting();
             updateLastUpdated();
-            fetchCCBNews();
+            fetchSecurityNews();
         }
 
         init();

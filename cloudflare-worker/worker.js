@@ -329,7 +329,12 @@ async function handleRSS(url, corsHeader) {
 
   // Only allow specific RSS feeds for security
   const allowedFeeds = [
-    'https://ccb.belgium.be/advisories.xml'
+    'https://ccb.belgium.be/advisories.xml',
+    'https://www.bleepingcomputer.com/feed/',
+    'https://krebsonsecurity.com/feed/',
+    'https://aws.amazon.com/blogs/security/feed/',
+    'https://isc.sans.edu/rssfeed.xml',
+    'https://api.msrc.microsoft.com/update-guide/rss'
   ];
 
   if (!allowedFeeds.includes(feedUrl)) {
