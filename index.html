@@ -686,14 +686,6 @@
         }
 
         /* ========== Security News ========== */
-        .security-news-section {
-            margin-bottom: var(--space-10);
-        }
-
-        .security-news-section .card-body {
-            height: 420px;
-        }
-
         .security-news-item {
             display: flex;
             align-items: flex-start;
@@ -732,6 +724,7 @@
         .source-aws { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
         .source-sans { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
         .source-msrc { background: rgba(14, 165, 233, 0.15); color: #38bdf8; }
+        .source-hn { background: rgba(255, 102, 0, 0.15); color: #ff6600; }
 
         .security-news-content {
             flex: 1;
@@ -755,10 +748,32 @@
             margin-top: 2px;
         }
 
-        @media (max-width: 768px) {
-            .security-news-section .card-body {
-                height: 350px;
-            }
+        .security-news-page {
+            transition: opacity 0.4s ease;
+        }
+
+        .security-news-page.fade-out {
+            opacity: 0;
+        }
+
+        .security-news-progress {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .security-news-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            opacity: 0.3;
+            transition: opacity var(--duration-fast) var(--ease-out);
+        }
+
+        .security-news-dot.active {
+            opacity: 1;
+            background: var(--accent);
         }
 
         /* ========== Quick Links ========== */
@@ -1401,19 +1416,54 @@
                 </div>
             </section>
 
-            <!-- Security News -->
-            <section class="security-news-section">
+            <!-- Security News Row -->
+            <section class="dashboard">
+                <!-- CCB Advisories -->
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                             </svg>
+                            CCB Advisories
+                        </div>
+                        <div class="security-news-progress" id="ccb-progress"></div>
+                    </div>
+                    <div class="card-body" id="ccb-container">
+                        <div class="loading">
+                            <div class="loading-dots"><span></span><span></span><span></span></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Security News -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
                             Security News
                         </div>
-                        <span class="card-badge" id="security-news-count">0</span>
+                        <div class="security-news-progress" id="security-progress"></div>
                     </div>
                     <div class="card-body" id="security-news-container">
+                        <div class="loading">
+                            <div class="loading-dots"><span></span><span></span><span></span></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tech News -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+                            </svg>
+                            Tech News
+                        </div>
+                        <div class="security-news-progress" id="tech-progress"></div>
+                    </div>
+                    <div class="card-body" id="tech-news-container">
                         <div class="loading">
                             <div class="loading-dots"><span></span><span></span><span></span></div>
                         </div>
@@ -2866,52 +2916,41 @@
         }
 
         // ========== Security News ==========
+        const CCB_FEEDS = [
+            { id: 'ccb', name: 'CCB', url: 'https://ccb.belgium.be/advisories.xml', className: 'source-ccb' }
+        ];
         const SECURITY_FEEDS = [
-            { id: 'ccb', name: 'CCB', url: 'https://ccb.belgium.be/advisories.xml', className: 'source-ccb', format: 'rss' },
-            { id: 'bleeping', name: 'Bleeping', url: 'https://www.bleepingcomputer.com/feed/', className: 'source-bleeping', format: 'rss' },
-            { id: 'krebs', name: 'Krebs', url: 'https://krebsonsecurity.com/feed/', className: 'source-krebs', format: 'rss' },
-            { id: 'aws', name: 'AWS', url: 'https://aws.amazon.com/blogs/security/feed/', className: 'source-aws', format: 'rss' },
-            { id: 'sans', name: 'SANS', url: 'https://isc.sans.edu/rssfeed.xml', className: 'source-sans', format: 'rss' },
-            { id: 'msrc', name: 'MSRC', url: 'https://api.msrc.microsoft.com/update-guide/rss', className: 'source-msrc', format: 'rss' }
+            { id: 'bleeping', name: 'Bleeping', url: 'https://www.bleepingcomputer.com/feed/', className: 'source-bleeping' },
+            { id: 'krebs', name: 'Krebs', url: 'https://krebsonsecurity.com/feed/', className: 'source-krebs' },
+            { id: 'aws', name: 'AWS', url: 'https://aws.amazon.com/blogs/security/feed/', className: 'source-aws' },
+            { id: 'sans', name: 'SANS', url: 'https://isc.sans.edu/rssfeed.xml', className: 'source-sans' },
+            { id: 'msrc', name: 'MSRC', url: 'https://api.msrc.microsoft.com/update-guide/rss', className: 'source-msrc' }
+        ];
+        const TECH_FEEDS = [
+            { id: 'hn', name: 'HN', url: 'https://hnrss.org/frontpage', className: 'source-hn' }
         ];
 
         function parseRSSItems(xmlDoc, feed) {
             const items = [];
-            // Try RSS 2.0 <item> first
             let entries = xmlDoc.querySelectorAll('item');
-            if (entries.length === 0) {
-                // Try Atom <entry>
-                entries = xmlDoc.querySelectorAll('entry');
-            }
+            if (entries.length === 0) entries = xmlDoc.querySelectorAll('entry');
             Array.from(entries).slice(0, 15).forEach(entry => {
                 const title = entry.querySelector('title')?.textContent || '';
-                // RSS 2.0: <link> text, Atom: <link href="">
                 const linkEl = entry.querySelector('link');
                 const link = linkEl?.getAttribute('href') || linkEl?.textContent || '#';
-                // Date: pubDate (RSS), updated (Atom), dc:date
                 const dateStr = entry.querySelector('pubDate')?.textContent
                     || entry.querySelector('updated')?.textContent
                     || entry.querySelector('date')?.textContent
                     || '';
                 const date = dateStr ? new Date(dateStr) : null;
-                if (title) {
-                    items.push({ title, link, date, feed });
-                }
+                if (title) items.push({ title, link, date, feed });
             });
             return items;
         }
 
-        async function fetchSecurityNews() {
-            const container = document.getElementById('security-news-container');
-            const badge = document.getElementById('security-news-count');
+        async function fetchFeeds(feeds, maxItems) {
             const config = getConfig();
-
-            if (!config.workerUrl) {
-                showEmptyState('security-news-container', '🔧', 'Set worker URL in settings');
-                return;
-            }
-
-            const results = await Promise.all(SECURITY_FEEDS.map(async (feed) => {
+            const results = await Promise.all(feeds.map(async (feed) => {
                 try {
                     const rssUrl = `${config.workerUrl}/rss?url=${encodeURIComponent(feed.url)}`;
                     const response = await fetch(rssUrl, { headers: workerHeaders() });
@@ -2925,27 +2964,114 @@
                     return [];
                 }
             }));
-
-            const allItems = results.flat()
+            return results.flat()
                 .sort((a, b) => (b.date || 0) - (a.date || 0))
-                .slice(0, 50);
+                .slice(0, maxItems);
+        }
 
-            if (allItems.length === 0) {
-                showEmptyState('security-news-container', '🛡️', 'No security news available');
-                badge.textContent = '0';
-                return;
-            }
-
-            badge.textContent = allItems.length;
-            container.innerHTML = allItems.map(item => `
+        function renderNewsPage(items, showBadge) {
+            return items.map(item => `
                 <a class="security-news-item" href="${safeHref(item.link)}" target="_blank" rel="noopener">
-                    <span class="source-badge ${escapeHtml(item.feed.className)}">${escapeHtml(item.feed.name)}</span>
+                    ${showBadge ? `<span class="source-badge ${escapeHtml(item.feed.className)}">${escapeHtml(item.feed.name)}</span>` : ''}
                     <div class="security-news-content">
                         <div class="security-news-title">${escapeHtml(item.title)}</div>
                         ${item.date ? `<div class="security-news-time">${timeAgo(item.date.toISOString())}</div>` : ''}
                     </div>
                 </a>
             `).join('');
+        }
+
+        const newsRotations = {};
+
+        function startNewsRotation(containerId, progressId, items, pageSize, showBadges, intervalMs) {
+            if (newsRotations[containerId]) clearInterval(newsRotations[containerId]);
+
+            const container = document.getElementById(containerId);
+            const progressEl = document.getElementById(progressId);
+            const pages = [];
+            for (let i = 0; i < items.length; i += pageSize) {
+                pages.push(items.slice(i, i + pageSize));
+            }
+            if (pages.length === 0) return;
+
+            let currentPage = 0;
+            let paused = false;
+
+            // Render page dots
+            progressEl.innerHTML = pages.map((_, i) =>
+                `<span class="security-news-dot${i === 0 ? ' active' : ''}"></span>`
+            ).join('');
+
+            function showPage(index) {
+                const wrapper = container.querySelector('.security-news-page');
+                if (!wrapper) return;
+                wrapper.classList.add('fade-out');
+                setTimeout(() => {
+                    wrapper.innerHTML = renderNewsPage(pages[index], showBadges);
+                    wrapper.classList.remove('fade-out');
+                    progressEl.querySelectorAll('.security-news-dot').forEach((dot, i) => {
+                        dot.classList.toggle('active', i === index);
+                    });
+                }, 400);
+            }
+
+            // Initial render
+            container.innerHTML = `<div class="security-news-page">${renderNewsPage(pages[0], showBadges)}</div>`;
+
+            // Pause on hover
+            const card = container.closest('.card');
+            card.addEventListener('mouseenter', () => { paused = true; });
+            card.addEventListener('mouseleave', () => { paused = false; });
+
+            if (pages.length > 1) {
+                newsRotations[containerId] = setInterval(() => {
+                    if (paused) return;
+                    currentPage = (currentPage + 1) % pages.length;
+                    showPage(currentPage);
+                }, intervalMs);
+            }
+        }
+
+        async function fetchCCBNews() {
+            const config = getConfig();
+            if (!config.workerUrl) {
+                showEmptyState('ccb-container', '🔧', 'Set worker URL in settings');
+                return;
+            }
+            const items = await fetchFeeds(CCB_FEEDS, 50);
+            if (items.length === 0) {
+                showEmptyState('ccb-container', '🛡️', 'No CCB advisories');
+                return;
+            }
+            startNewsRotation('ccb-container', 'ccb-progress', items, 7, false, 18000);
+        }
+
+        async function fetchSecurityNews() {
+            const config = getConfig();
+            if (!config.workerUrl) {
+                showEmptyState('security-news-container', '🔧', 'Set worker URL in settings');
+                return;
+            }
+            const items = await fetchFeeds(SECURITY_FEEDS, 50);
+            if (items.length === 0) {
+                showEmptyState('security-news-container', '🔒', 'No security news available');
+                return;
+            }
+            startNewsRotation('security-news-container', 'security-progress', items, 7, true, 18000);
+        }
+
+        async function fetchTechNews() {
+            const config = getConfig();
+            if (!config.workerUrl) {
+                showEmptyState('tech-news-container', '🔧', 'Set worker URL in settings');
+                return;
+            }
+            const items = await fetchFeeds(TECH_FEEDS, 50);
+            if (items.length === 0) {
+                showEmptyState('tech-news-container', '💻', 'No tech news available');
+                return;
+            }
+            startNewsRotation('tech-news-container', 'tech-progress', items, 7, false, 18000);
         }
 
         // ========== Init ==========
@@ -2956,7 +3082,9 @@
             fetchOTRSTickets();
             fetchNextMeeting();
             updateLastUpdated();
+            fetchCCBNews();
             fetchSecurityNews();
+            fetchTechNews();
         }
 
         init();
