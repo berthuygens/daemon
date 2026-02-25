@@ -769,6 +769,11 @@
             background: var(--text-muted);
             opacity: 0.3;
             transition: opacity var(--duration-fast) var(--ease-out);
+            cursor: pointer;
+        }
+
+        .security-news-dot:hover {
+            opacity: 0.7;
         }
 
         .security-news-dot.active {
@@ -2997,11 +3002,6 @@
             let currentPage = 0;
             let paused = false;
 
-            // Render page dots
-            progressEl.innerHTML = pages.map((_, i) =>
-                `<span class="security-news-dot${i === 0 ? ' active' : ''}"></span>`
-            ).join('');
-
             function showPage(index) {
                 const wrapper = container.querySelector('.security-news-page');
                 if (!wrapper) return;
@@ -3015,6 +3015,30 @@
                 }, 400);
             }
 
+            function resetInterval() {
+                if (newsRotations[containerId]) clearInterval(newsRotations[containerId]);
+                if (pages.length > 1) {
+                    newsRotations[containerId] = setInterval(() => {
+                        if (paused) return;
+                        currentPage = (currentPage + 1) % pages.length;
+                        showPage(currentPage);
+                    }, intervalMs);
+                }
+            }
+
+            // Render page dots with click handlers
+            progressEl.innerHTML = pages.map((_, i) =>
+                `<span class="security-news-dot${i === 0 ? ' active' : ''}"></span>`
+            ).join('');
+            progressEl.querySelectorAll('.security-news-dot').forEach((dot, i) => {
+                dot.addEventListener('click', () => {
+                    if (i === currentPage) return;
+                    currentPage = i;
+                    showPage(currentPage);
+                    resetInterval();
+                });
+            });
+
             // Initial render
             container.innerHTML = `<div class="security-news-page">${renderNewsPage(pages[0], showBadges)}</div>`;
 
@@ -3023,13 +3047,7 @@
             card.addEventListener('mouseenter', () => { paused = true; });
             card.addEventListener('mouseleave', () => { paused = false; });
 
-            if (pages.length > 1) {
-                newsRotations[containerId] = setInterval(() => {
-                    if (paused) return;
-                    currentPage = (currentPage + 1) % pages.length;
-                    showPage(currentPage);
-                }, intervalMs);
-            }
+            resetInterval();
         }
 
         async function fetchCCBNews() {
